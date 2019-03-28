@@ -20,39 +20,39 @@ SET @STATO = 'FUNZIONI'$
 SELECT @STATO$
 SET @STATO = 'FONTI'$
 SELECT @STATO$
-SOURCE C:/Users/cmunaro/Desktop/asd/SQL/function/Fonti/f_build.sql$
+SOURCE <INSERIRE_PATH_ASSOLUTO>/PragmaDB/SQL/function/Fonti/f_build.sql$
 SET @STATO = 'GLOSSARIO'$
 SELECT @STATO$
-SOURCE C:/Users/cmunaro/Desktop/asd/SQL/function/Glossario/g_build.sql$
+SOURCE <INSERIRE_PATH_ASSOLUTO>/PragmaDB/SQL/function/Glossario/g_build.sql$
 SET @STATO = 'REQTRACKING'$
 SELECT @STATO$
-SOURCE C:/Users/cmunaro/Desktop/asd/SQL/function/ReqTracking/rt_utility.sql$
+SOURCE <INSERIRE_PATH_ASSOLUTO>/PragmaDB/SQL/function/ReqTracking/rt_utility.sql$
 SET @STATO = 'REQUISITI'$
 SELECT @STATO$
-SOURCE C:/Users/cmunaro/Desktop/asd/SQL/function/Requisiti/r_build.sql$
-SOURCE C:/Users/cmunaro/Desktop/asd/SQL/function/Requisiti/r_check.sql$
+SOURCE <INSERIRE_PATH_ASSOLUTO>/PragmaDB/SQL/function/Requisiti/r_build.sql$
+SOURCE <INSERIRE_PATH_ASSOLUTO>/PragmaDB/SQL/function/Requisiti/r_check.sql$
 SET @STATO = 'REQUISITI_TREE'$
 SELECT @STATO$
-SOURCE C:/Users/cmunaro/Desktop/asd/SQL/function/Requisiti/r_find_gap.sql$
-SOURCE C:/Users/cmunaro/Desktop/asd/SQL/function/Requisiti/r_find_last.sql$
-SOURCE C:/Users/cmunaro/Desktop/asd/SQL/function/Requisiti/r_sibling.sql$
+SOURCE <INSERIRE_PATH_ASSOLUTO>/PragmaDB/SQL/function/Requisiti/r_find_gap.sql$
+SOURCE <INSERIRE_PATH_ASSOLUTO>/PragmaDB/SQL/function/Requisiti/r_find_last.sql$
+SOURCE <INSERIRE_PATH_ASSOLUTO>/PragmaDB/SQL/function/Requisiti/r_sibling.sql$
 SET @STATO = 'REQUISITI_UTILITY'$
 SELECT @STATO$
-SOURCE C:/Users/cmunaro/Desktop/asd/SQL/function/Requisiti/r_tree_utility.sql$
+SOURCE <INSERIRE_PATH_ASSOLUTO>/PragmaDB/SQL/function/Requisiti/r_tree_utility.sql$
 SET @STATO = 'USECASE'$
 SELECT @STATO$
-SOURCE C:/Users/cmunaro/Desktop/asd/SQL/function/UseCase/uc_build.sql$
-SOURCE C:/Users/cmunaro/Desktop/asd/SQL/function/UseCase/uc_check.sql$
-SOURCE C:/Users/cmunaro/Desktop/asd/SQL/function/UseCase/uc_find_last.sql$
+SOURCE <INSERIRE_PATH_ASSOLUTO>/PragmaDB/SQL/function/UseCase/uc_build.sql$
+SOURCE <INSERIRE_PATH_ASSOLUTO>/PragmaDB/SQL/function/UseCase/uc_check.sql$
+SOURCE <INSERIRE_PATH_ASSOLUTO>/PragmaDB/SQL/function/UseCase/uc_find_last.sql$
 SET @STATO = 'USECASE_UTILITY'$
 SELECT @STATO$
-SOURCE C:/Users/cmunaro/Desktop/asd/SQL/function/UseCase/uc_build.sql$
-SOURCE C:/Users/cmunaro/Desktop/asd/SQL/function/UseCase/uc_check.sql$
-SOURCE C:/Users/cmunaro/Desktop/asd/SQL/function/UseCase/uc_find_gap.sql$
-SOURCE C:/Users/cmunaro/Desktop/asd/SQL/function/UseCase/uc_find_last.sql$
-SOURCE C:/Users/cmunaro/Desktop/asd/SQL/function/UseCase/uc_utility.sql$
+SOURCE <INSERIRE_PATH_ASSOLUTO>/PragmaDB/SQL/function/UseCase/uc_build.sql$
+SOURCE <INSERIRE_PATH_ASSOLUTO>/PragmaDB/SQL/function/UseCase/uc_check.sql$
+SOURCE <INSERIRE_PATH_ASSOLUTO>/PragmaDB/SQL/function/UseCase/uc_find_gap.sql$
+SOURCE <INSERIRE_PATH_ASSOLUTO>/PragmaDB/SQL/function/UseCase/uc_find_last.sql$
+SOURCE <INSERIRE_PATH_ASSOLUTO>/PragmaDB/SQL/function/UseCase/uc_utility.sql$
 SET @STATO = 'TEST'$
 SELECT @STATO$
-SOURCE C:/Users/cmunaro/Desktop/asd/SQL/function/Test/t_build.sql$
+SOURCE <INSERIRE_PATH_ASSOLUTO>/PragmaDB/SQL/function/Test/t_build.sql$
 
 DELIMITER ;

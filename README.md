@@ -14,8 +14,8 @@ Software per la gestione di documenti di progetto, in particolare permette di ge
 ## Prerequisiti
 Per utilizzare PragmaDB è necessario avere installato sulla macchina
 host (virtuale o fisica che sia):
-* *PHP*: versione > 5.3.10 => questa è stata utilizzata durante il progetto;
-* *MySQL*: versione > 5.1 => necessita del supporto per stored procedure ricorsive.  
+* *PHP*: versione > 7.2 => questa è stata utilizzata durante il progetto;
+* *MySQL*: versione > 8.0 => necessita del supporto per stored procedure ricorsive.  
 
 ### Note preliminari
 * Tutti gli elementi che possono appartenere ad una gerarchia (i.e. Requisiti,
@@ -38,8 +38,12 @@ con il path assoluto dell'host.
 * modificare tutti i file .sql contenuti **nella directory manutenzione** in modo
 che siano specifici per l'utilizzo da parte del vostro team
 (inserire i valori per la creazione degli utenti, inserire i path etc.).
+* modificare il file SQL\manutenzione\populateDB\dati_utente.sql per popolare la tabella utenti.
 * creare nel server mysql un database con nome **pragmadb** associato ad un
 utente con password.  
+```
+create schema pragmadb;
+```
 
 #### Caricamento mysql
 * Effetuare l'accesso a MySQL con l'utente precedentemente creato.
@@ -49,7 +53,7 @@ use pragmadb;
 ```
 * invocare:
 ```
-SOURCE <PATH>/pragmadb/SQL/manutenzione/initializeDB/creator.sql
+SOURCE <PATH>/PragmaDB/SQL/manutenzione/initializeDB/creator.sql
 ```
 dove path va sostituito con il path assoluto dell'host che contiene
 la cartella MySQL.
@@ -95,6 +99,12 @@ ed in particolare dell'architettura che abbiamo realizzato (qualità
 ## Autori
 *Munari Stefano* : parte MySQL  
 *Vedovato Fabio* : parte PHP  
+*Munaro Cristiano* : Aggiornamento MySQL e PHP
+
+## Update
+* Aggiornato a PHP 7.2
+* Aggiornato a MySQL 8.0 (legacy authentication)
+* Risolti alcuni bug
 
 ## Licenza
 [Tutti i files .sql sono rilasciati sotto licenza GPLv3](https://github.com/StefanoMunari/PragmaDB/blob/master/LICENSE)

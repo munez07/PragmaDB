@@ -1,6 +1,6 @@
 <?php
 
-require('../Functions/mysql_fun.php');
+require('../Functions/mysqli_fun.php');
 require('../Functions/page_builder.php');
 require('../Functions/urlLab.php');
 
@@ -112,8 +112,8 @@ else{
 			$query="SELECT r.Tipo+0,r.Importanza+0
 					FROM Requisiti r
 					WHERE r.CodAuto='$padref'";
-			$ris=mysql_query($query,$conn) or fail("Query fallita: ".mysql_error($conn));
-			$row=mysql_fetch_row($ris);
+			$ris=  $conn->query($query) or die("Query fallita: ".mysqli_error($conn));
+			$row=mysqli_fetch_row($ris);
 			if($row[0]!=null){
 				if($row[0]!=$tipof){
 					$err_tipo_padre=true;
@@ -207,13 +207,13 @@ END;
 			if(($descf==$old_descf) && ($statof==$old_statof) && ($soddisfattof==$old_soddisfattof) && ($implementatof==$old_implementatof) && ($fontef==$old_fontef)){
 				$secondari_modificati=0;
 			}
-			$descf=mysql_escape_string($descf);
 			$conn=sql_conn();
+			$descf=$conn->real_escape_string($descf);
 			$timestamp_query="SELECT r.Time
 							  FROM ReqTracking r
 							  WHERE r.CodAuto='$id' AND r.IdTrack=findLastReqTracking('$id')";
-			$timestamp_query=mysql_query($timestamp_query,$conn) or fail("Query fallita: ".mysql_error($conn));
-			if($row=mysql_fetch_row($timestamp_query)){
+			$timestamp_query=$conn->query($timestamp_query) or die("Query fallita: ".mysqli_error($conn));
+			if($row=mysqli_fetch_row($timestamp_query)){
 				$timestamp_db=$row[0];
 				$timestamp_db=strtotime($timestamp_db);
 				if($timestampf<$timestamp_db){
@@ -258,7 +258,7 @@ END;
 					else{
 						$query=$query."'$ucf')";
 					}
-					$query=mysql_query($query,$conn) or fail("Query fallita: ".mysql_error($conn));
+					$query=  $conn->query($query) or die("Query fallita: ".mysqli_error($conn));
 					$title="Requisito Modificato";
 					startpage_builder($title);
 echo<<<END
@@ -285,14 +285,14 @@ END;
 	}
 	else{
 		$id=$_GET['id'];
-		$id=mysql_escape_string($id);
 		$conn=sql_conn();
+		$id=$conn->real_escape_string($id);
 		$query="SELECT r.CodAuto,r.IdRequisito,r.Descrizione,r.Tipo+0,r.Importanza+0,r.Padre,r.Stato,r.Soddisfatto,r.Implementato,r.Fonte
 				FROM Requisiti r
 				WHERE r.CodAuto='$id'";
-		$req=mysql_query($query,$conn) or fail("Query fallita: ".mysql_error($conn));
+		$req=  $conn->query($query) or die("Query fallita: ".mysqli_error($conn));
 		$timestamp=time();
-		$requidb=mysql_fetch_row($req);
+		$requidb=mysqli_fetch_row($req);
 		if($requidb[0]==$id){
 			$title="Modifica Requisito - $requidb[1]";
 			startpage_builder($title);
@@ -410,14 +410,14 @@ echo<<<END
 									<option value="N/D">N/D</option>
 END;
 			//$query_ord="CALL sortForest('Requisiti')";
-			//$ord=mysql_query($query_ord,$conn) or fail("Query fallita: ".mysql_error($conn));
+			//$ord=mysqli_query($query_ord,$conn) or die("Query fallita: ".mysqli_error($conn));
 			foreach($tipi as $tipo){
 echo<<<END
 
 									<optgroup label="$tipo" class="first-opt">
 END;
 				$requi=extract_IdRequisiti($tipo);
-				while($row=mysql_fetch_row($requi)){
+				while($row=mysqli_fetch_row($requi)){
 					if($row[0]!=null){
 						if($row[0]==$requidb[5]){
 echo<<<END
@@ -519,8 +519,8 @@ END;
 		$query="SELECT f.CodAuto,f.IdFonte,f.Nome
 				FROM Fonti f
 				ORDER BY f.IdFonte;";
-		$fonti=mysql_query($query,$conn) or fail("Query fallita: ".mysql_error($conn));
-		while($row=mysql_fetch_row($fonti)){
+		$fonti=  $conn->query($query) or die("Query fallita: ".mysqli_error($conn));
+		while($row=mysqli_fetch_row($fonti)){
 			if($row[0]!=null){
 				if($row[0]==$requidb[9]){
 echo<<<END
@@ -548,21 +548,21 @@ END;
 		$query="SELECT u.CodAuto,u.IdUC
 				FROM _MapUseCase h JOIN UseCase u ON h.CodAuto=u.CodAuto
 				ORDER BY h.Position";
-		//$ord=mysql_query($query_ord,$conn) or fail("Query fallita: ".mysql_error($conn));
-		$tutti_uc_query=mysql_query($query,$conn) or fail("Query fallita: ".mysql_error($conn));
+		//$ord=mysqli_query($query_ord,$conn) or die("Query fallita: ".mysqli_error($conn));
+		$tutti_uc_query=  $conn->query($query) or die("Query fallita: ".mysqli_error($conn));
 		$tutti_uc=array();
-		while($row=mysql_fetch_row($tutti_uc_query)){
+		while($row=mysqli_fetch_row($tutti_uc_query)){
 			$tutti_uc["$row[1]"]=$row[0];
 		}
 		$query="SELECT u.CodAuto,u.IdUC
 				FROM RequisitiUC ruc JOIN (_MapUseCase h JOIN UseCase u ON h.CodAuto=u.CodAuto) ON ruc.UC=u.CodAuto
 				WHERE ruc.CodReq='$id'
 				ORDER BY h.Position";
-		$uc_query=mysql_query($query,$conn) or fail("Query fallita: ".mysql_error($conn));
+		$uc_query=  $conn->query($query) or die("Query fallita: ".mysqli_error($conn));
 		$uc=array();
 		$listaolduc="";
 		$i=0;
-		while($row=mysql_fetch_row($uc_query)){
+		while($row=mysqli_fetch_row($uc_query)){
 			$uc["$row[1]"]=$row[0];
 			$listaolduc=($listaolduc.$row[0]).",";
 		}

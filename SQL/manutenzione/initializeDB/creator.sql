@@ -17,8 +17,8 @@ DELIMITER ;
 
 SET @STATO = 'CREATE_DB';
 SELECT @STATO;
-SOURCE <INSERIRE_PATH_ASSOLUTO>/pragmadb/SQL/DDL/set_mysql_variables.sql;
-SOURCE <INSERIRE_PATH_ASSOLUTO>/pragmadb/SQL/DDL/Creation.sql;
-SOURCE <INSERIRE_PATH_ASSOLUTO>/pragmadb/SQL/manutenzione/resetDB/resetFunctions.sql;
-SOURCE <INSERIRE_PATH_ASSOLUTO>/pragmadb/SQL/manutenzione/resetDB/resetProcedures.sql;
-SOURCE <INSERIRE_PATH_ASSOLUTO>/pragmadb/SQL/manutenzione/populateDB/datiUtenti.sql;
+SOURCE C:/Users/cmunaro/Desktop/asd/SQL/DDL/set_mysql_variables.sql;
+SOURCE C:/Users/cmunaro/Desktop/asd/SQL/DDL/Creation.sql;
+SOURCE C:/Users/cmunaro/Desktop/asd/SQL/manutenzione/resetDB/resetFunctions.sql;
+SOURCE C:/Users/cmunaro/Desktop/asd/SQL/manutenzione/resetDB/resetProcedures.sql;
+SOURCE C:/Users/cmunaro/Desktop/asd/SQL/manutenzione/populateDB/dati_utenti.sql;

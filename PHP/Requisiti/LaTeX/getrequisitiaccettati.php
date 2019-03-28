@@ -1,6 +1,6 @@
 <?php
 
-require('../../Functions/mysql_fun.php');
+require('../../Functions/mysqli_fun.php');
 require('../../Functions/urlLab.php');
 
 session_start();
@@ -22,12 +22,12 @@ else{
 			FROM _MapRequisiti h JOIN Requisiti r ON h.CodAuto=r.CodAuto
 			WHERE r.Stato='1'
 			ORDER BY h.Position";
-	//$ord=mysql_query($query_ord,$conn) or fail("Query fallita: ".mysql_error($conn));
-	$requi=mysql_query($query,$conn) or fail("Query fallita: ".mysql_error($conn));
+	//$ord=mysqli_query($query_ord,$conn) or die("Query fallita: ".mysqli_error($conn));
+	$requi=  $conn->query($query) or die("Query fallita: ".mysqli_error($conn));
 echo<<<END
 \\begin{itemize}
 END;
-	while($row=mysql_fetch_row($requi)){
+	while($row=mysqli_fetch_row($requi)){
 echo<<<END
 
 \\item \\hyperlink{{$row[0]}}{{$row[0]}}: $row[1];

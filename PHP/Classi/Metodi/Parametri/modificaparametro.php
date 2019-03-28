@@ -1,6 +1,6 @@
 <?php
 
-require('../../../Functions/mysql_fun.php');
+require('../../../Functions/mysqli_fun.php');
 require('../../../Functions/page_builder.php');
 require('../../../Functions/urlLab.php'); 
 
@@ -45,15 +45,15 @@ else{
 			$err_desc=true;
 			$errori++;
 		}
-		$nomef=mysql_escape_string($nomef);
-		$tipof=mysql_escape_string($tipof);
-		$descf=mysql_escape_string($descf);
 		$conn=sql_conn();
+		$nomef = $conn->real_escape_string($nomef);
+		$tipof = $conn->real_escape_string($tipof);
+		$descf = $conn->real_escape_string($descf);
 		$query="SELECT p.CodAuto
 				FROM Parametro p
 				WHERE p.Nome='$nomef' AND p.Metodo='$me' AND p.CodAuto<>'$id'";
-		$pres=mysql_query($query,$conn) or fail("Query fallita: ".mysql_error($conn));
-		$pres=mysql_fetch_row($pres);
+		$pres=  $conn->query($query) or die("Query fallita: ".mysqli_error($conn));
+		$pres=mysqli_fetch_row($pres);
 		if($pres[0]!=null){
 			$err_pres=true;
 			$errori++;
@@ -107,8 +107,8 @@ END;
 			$timestamp_query="SELECT c.Time
 							  FROM Classe c
 							  WHERE c.CodAuto='$cl'";
-			$timestamp_query=mysql_query($timestamp_query,$conn) or fail("Query fallita: ".mysql_error($conn));
-			if($row=mysql_fetch_row($timestamp_query)){
+			$timestamp_query=$conn->query($timestamp_query) or die("Query fallita: ".mysqli_error($conn));
+			if($row=mysqli_fetch_row($timestamp_query)){
 				$timestamp_db=$row[0];
 				$timestamp_db=strtotime($timestamp_db);
 				if($timestampf<$timestamp_db){
@@ -142,7 +142,7 @@ END;
 						$query=$query."'$descf',";
 					}
 					$query=$query."'$me','$cl')";
-					$query=mysql_query($query,$conn) or fail("Query fallita: ".mysql_error($conn));
+					$query=  $conn->query($query) or die("Query fallita: ".mysqli_error($conn));
 					$title="Parametro Modificato";
 					startpage_builder($title);
 echo<<<END
@@ -169,14 +169,14 @@ END;
 	}
 	else{
 		$id=$_GET['id'];
-		$id=mysql_escape_string($id);
 		$conn=sql_conn();
+		$id = $conn->real_escape_string($id);
 		$query="SELECT p.CodAuto, p.Nome, p.Tipo, p.Descrizione, m.Nome, p.Metodo, c.PrefixNome, c.CodAuto
 				FROM (Parametro p JOIN Metodo m ON p.Metodo=m.CodAuto) JOIN Classe c ON m.Classe=c.CodAuto
 				WHERE p.CodAuto='$id'";
-		$par=mysql_query($query,$conn) or fail("Query fallita: ".mysql_error($conn));
+		$par=  $conn->query($query) or die("Query fallita: ".mysqli_error($conn));
 		$timestamp=time();
-		$pardb=mysql_fetch_row($par);
+		$pardb=mysqli_fetch_row($par);
 		if($pardb[0]==$id){
 			$title="$pardb[6] - $pardb[4] - Modifica $pardb[1]";
 			startpage_builder($title);

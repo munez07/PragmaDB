@@ -20,7 +20,7 @@ buildIdR
     Costruisce IdRequisito t.c. corrisponde alla prossima posizione libera nell'albero
 */
 DROP FUNCTION IF EXISTS buildIdRequisito $
-CREATE FUNCTION buildIdRequisito ( Tipo ENUM('Funzionale','Vincolo','Qualita','Prestazionale') , Importanza ENUM('Obbligatorio','Desiderabile','Facoltativo'), Padre INT(5) ) RETURNS VARCHAR(20)
+CREATE FUNCTION buildIdRequisito ( Tipo ENUM('Funzionale','Vincolo','Qualita','Prestazionale') , Importanza ENUM('Obbligatorio','Desiderabile','Facoltativo'), Padre INT(5) ) RETURNS VARCHAR(20) DETERMINISTIC
 BEGIN
     DECLARE IdRequisito VARCHAR(20);
     DECLARE IdParent VARCHAR(20);

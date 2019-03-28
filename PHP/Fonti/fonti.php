@@ -1,6 +1,6 @@
 <?php
 
-require('../Functions/mysql_fun.php');
+require('../Functions/mysqli_fun.php');
 require('../Functions/page_builder.php');
 require('../Functions/urlLab.php');
 
@@ -16,7 +16,7 @@ else{
 	$query="SELECT f.CodAuto, f.IdFonte, f.Nome, f.Descrizione, f.Time
 			FROM Fonti f
 			ORDER BY f.IdFonte";
-	$req=mysql_query($query,$conn) or fail("Query fallita: ".mysql_error($conn));
+	$req=  $conn->query($query) or die("Query fallita: ".mysqli_error($conn));
 	$title="Fonti";
 	startpage_builder($title);
 echo<<<END
@@ -42,7 +42,7 @@ echo<<<END
 					</thead>
 					<tbody>
 END;
-	while($row=mysql_fetch_row($req)){
+	while($row=mysqli_fetch_row($req)){
 echo<<<END
 
 						<tr>

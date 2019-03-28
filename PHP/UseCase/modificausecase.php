@@ -1,6 +1,6 @@
 <?php
 
-require('../Functions/mysql_fun.php');
+require('../Functions/mysqli_fun.php');
 require('../Functions/page_builder.php');
 require('../Functions/urlLab.php');
 
@@ -145,21 +145,21 @@ END;
 				$temp=$_POST["attore$i"];
 				$attorif="$attorif"."$temp".",";
 			}
-			$nomef=mysql_escape_string($nomef);
-			$diagf=mysql_escape_string($diagf);
-			$descf=mysql_escape_string($descf);
-			$pref=mysql_escape_string($pref);
-			$postf=mysql_escape_string($postf);
-			$princf=mysql_escape_string($princf);
-			$inclusionif=mysql_escape_string($inclusionif);
-			$estensionif=mysql_escape_string($estensionif);
-			$altef=mysql_escape_string($altef);
 			$conn=sql_conn();
+			$nomef=$conn->real_escape_string($nomef);
+			$diagf=$conn->real_escape_string($diagf);
+			$descf=$conn->real_escape_string($descf);
+			$pref=$conn->real_escape_string($pref);
+			$postf=$conn->real_escape_string($postf);
+			$princf=$conn->real_escape_string($princf);
+			$inclusionif=$conn->real_escape_string($inclusionif);
+			$estensionif=$conn->real_escape_string($estensionif);
+			$altef=$conn->real_escape_string($altef);
 			$timestamp_query="SELECT u.Time
 							  FROM UseCase u
 							  WHERE u.CodAuto='$id'";
-			$timestamp_query=mysql_query($timestamp_query,$conn) or fail("Query fallita: ".mysql_error($conn));
-			if($row=mysql_fetch_row($timestamp_query)){
+			$timestamp_query=$conn->query($timestamp_query) or die("Query fallita: ".mysqli_error($conn));
+			if($row=mysqli_fetch_row($timestamp_query)){
 				$timestamp_db=$row[0];
 				$timestamp_db=strtotime($timestamp_db);
 				if($timestampf<$timestamp_db){
@@ -213,7 +213,7 @@ END;
 						$query=$query."'$requif',";
 					}
 					$query=$query."'$attorif','$_SESSION[user]')";
-					$query=mysql_query($query,$conn) or fail("Query fallita: ".mysql_error($conn));
+					$query=  $conn->query($query) or die("Query fallita: ".mysqli_error($conn));
 					$title="Use Case Modificato";
 					startpage_builder($title);
 echo<<<END
@@ -240,15 +240,16 @@ END;
 	}
 	else{
 		$id=$_GET['id'];
-		$id=mysql_escape_string($id);
+		$conn = sql_conn();
+		$id=$conn->real_escape_string($id);
 		$conn=sql_conn();
 		$query="SELECT u.CodAuto,u.IdUC,u.Nome,u.Diagramma,u.Descrizione,u.Precondizioni,u.Postcondizioni,u.Padre,u.ScenarioPrincipale,u.Inclusioni,u.Estensioni,u.ScenariAlternativi,u.Time
 				FROM UseCase u
 				WHERE u.CodAuto='$id'";
 		$title="Modifica Use Case";
-		$uc=mysql_query($query,$conn) or fail("Query fallita: ".mysql_error($conn));
+		$uc=  $conn->query($query) or die("Query fallita: ".mysqli_error($conn));
 		$timestamp=time();
-		$ucdb=mysql_fetch_row($uc);
+		$ucdb=mysqli_fetch_row($uc);
 		if($ucdb[0]==$id){
 			$title="Modifica Use Case - $ucdb[1]";
 			startpage_builder($title);
@@ -288,9 +289,9 @@ END;
 			$query="SELECT u.CodAuto, u.IdUC
 					FROM _MapUseCase h JOIN UseCase u ON h.CodAuto=u.CodAuto
 					ORDER BY h.Position";
-			//$ord=mysql_query($query_ord,$conn) or fail("Query fallita: ".mysql_error($conn));
-			$uc=mysql_query($query,$conn) or fail("Query fallita: ".mysql_error($conn));
-			while($row=mysql_fetch_row($uc)){
+			//$ord=mysqli_query($query_ord,$conn) or die("Query fallita: ".mysqli_error($conn));
+			$uc=  $conn->query($query) or die("Query fallita: ".mysqli_error($conn));
+			while($row=mysqli_fetch_row($uc)){
 				if($row[0]!=null){
 					if($row[0]==$ucdb[7]){
 echo<<<END
@@ -334,19 +335,19 @@ END;
 			$query="SELECT a.CodAuto, a.Nome
 					FROM Attori a
 					ORDER BY a.Nome";
-			$tutti_attori_query=mysql_query($query,$conn) or fail("Query fallita: ".mysql_error($conn));
+			$tutti_attori_query=  $conn->query($query) or die("Query fallita: ".mysqli_error($conn));
 			$tutti_attori=array();
-			while($row=mysql_fetch_row($tutti_attori_query)){
+			while($row=mysqli_fetch_row($tutti_attori_query)){
 				$tutti_attori["$row[1]"]=$row[0];
 			}
 			$query="SELECT a.CodAuto, a.Nome
 					FROM AttoriUC auc JOIN Attori a ON auc.Attore=a.CodAuto
 					WHERE auc.UC='$id'
 					ORDER BY a.Nome";
-			$attori_query=mysql_query($query,$conn) or fail("Query fallita: ".mysql_error($conn));
+			$attori_query=  $conn->query($query) or die("Query fallita: ".mysqli_error($conn));
 			$attori=array();
 			$i=0;
-			while($row=mysql_fetch_row($attori_query)){
+			while($row=mysqli_fetch_row($attori_query)){
 				$attori["$row[1]"]=$row[0];
 			}
 			$attori_rimanenti=array();
@@ -403,21 +404,21 @@ END;
 			$query="SELECT r.CodAuto, r.IdRequisito
 					FROM _MapRequisiti h JOIN Requisiti r ON h.CodAuto=r.CodAuto
 					ORDER BY h.Position";
-			//$ord=mysql_query($query_ord,$conn) or fail("Query fallita: ".mysql_error($conn));
-			$tutti_requi_query=mysql_query($query,$conn) or fail("Query fallita: ".mysql_error($conn));
+			//$ord=mysqli_query($query_ord,$conn) or die("Query fallita: ".mysqli_error($conn));
+			$tutti_requi_query=  $conn->query($query) or die("Query fallita: ".mysqli_error($conn));
 			$tutti_requi=array();
-			while($row=mysql_fetch_row($tutti_requi_query)){
+			while($row=mysqli_fetch_row($tutti_requi_query)){
 				$tutti_requi["$row[1]"]=$row[0];
 			}
 			$query="SELECT r.CodAuto, r.IdRequisito
 					FROM RequisitiUC ruc JOIN (_MapRequisiti h JOIN Requisiti r ON h.CodAuto=r.CodAuto) ON ruc.CodReq=r.CodAuto
 					WHERE ruc.UC='$id'
 					ORDER BY h.Position";
-			$requi_query=mysql_query($query,$conn) or fail("Query fallita: ".mysql_error($conn));
+			$requi_query=  $conn->query($query) or die("Query fallita: ".mysqli_error($conn));
 			$requi=array();
 			$listaoldrequi="";
 			$j=0;
-			while($row=mysql_fetch_row($requi_query)){
+			while($row=mysqli_fetch_row($requi_query)){
 				$requi["$row[1]"]=$row[0];
 				$listaoldrequi=($listaoldrequi.$row[0]).",";
 			}

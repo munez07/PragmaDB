@@ -1,6 +1,6 @@
 <?php
 
-require('../../../Functions/mysql_fun.php');
+require('../../../Functions/mysqli_fun.php');
 require('../../../Functions/page_builder.php');
 require('../../../Functions/urlLab.php'); 
 
@@ -36,15 +36,15 @@ else{
 			$err_desc=true;
 			$errori++;
 		}
-		$nomef=mysql_escape_string($nomef);
-		$tipof=mysql_escape_string($tipof);
-		$descf=mysql_escape_string($descf);
 		$conn=sql_conn();
+		$nomef = $conn->real_escape_string($nomef);
+		$tipof = $conn->real_escape_string($tipof);
+		$descf = $conn->real_escape_string($descf);
 		$query="SELECT p.CodAuto
 				FROM Parametro p
 				WHERE p.Nome='$nomef' AND p.Metodo='$me'";
-		$pres=mysql_query($query,$conn) or fail("Query fallita: ".mysql_error($conn));
-		$pres=mysql_fetch_row($pres);
+		$pres=  $conn->query($query) or die("Query fallita: ".mysqli_error($conn));
+		$pres=mysqli_fetch_row($pres);
 		if($pres[0]!=null){
 			$err_pres=true;
 			$errori++;
@@ -92,8 +92,8 @@ END;
 			$timestamp_query="SELECT c.Time
 							  FROM Classe c
 							  WHERE c.CodAuto='$cl'";
-			$timestamp_query=mysql_query($timestamp_query,$conn) or fail("Query fallita: ".mysql_error($conn));
-			if($row=mysql_fetch_row($timestamp_query)){
+			$timestamp_query=$conn->query($timestamp_query) or die("Query fallita: ".mysqli_error($conn));
+			if($row=mysqli_fetch_row($timestamp_query)){
 				$timestamp_db=$row[0];
 				$timestamp_db=strtotime($timestamp_db);
 				if($timestampf<$timestamp_db){
@@ -108,7 +108,7 @@ END;
 				}
 				else{
 					$query="CALL insertParametro('$nomef','$tipof','$descf','$me','$cl')";
-					$query=mysql_query($query,$conn) or fail("Query fallita: ".mysql_error($conn));
+					$query=  $conn->query($query) or die("Query fallita: ".mysqli_error($conn));
 					$title="Parametro Inserito";
 					startpage_builder($title);
 echo<<<END
@@ -135,14 +135,14 @@ END;
 	}
 	else{
 		$me=$_GET['me'];
-		$me=mysql_escape_string($me);
 		$conn=sql_conn();
+		$me = $conn->real_escape_string($me);
 		$query="SELECT m.CodAuto, m.Nome, m.Classe
 				FROM Metodo m
 				WHERE m.CodAuto='$me'";
-		$metodo=mysql_query($query,$conn) or fail("Query fallita: ".mysql_error($conn));
+		$metodo=  $conn->query($query) or die("Query fallita: ".mysqli_error($conn));
 		$timestamp=time();
-		$row_me=mysql_fetch_row($metodo);
+		$row_me=mysqli_fetch_row($metodo);
 		if($row_me[0]==$me){
 			$title="$row_me[1] - Inserisci Parametro";
 			startpage_builder($title);

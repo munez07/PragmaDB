@@ -16,7 +16,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 DELIMITER $
 
 DROP FUNCTION IF EXISTS buildIdTest $
-CREATE FUNCTION buildIdTest (TipoR ENUM('Validazione','Sistema','Integrazione','Unita','Regressione')) RETURNS VARCHAR(22)
+CREATE FUNCTION buildIdTest (TipoR ENUM('Validazione','Sistema','Integrazione','Unita','Regressione')) RETURNS VARCHAR(22) DETERMINISTIC
 BEGIN
 DECLARE IdReq VARCHAR(4) DEFAULT NULL;
 DECLARE lastN INT DEFAULT 0;

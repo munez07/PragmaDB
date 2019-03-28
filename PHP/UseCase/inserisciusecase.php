@@ -1,6 +1,6 @@
 <?php
 
-require('../Functions/mysql_fun.php');
+require('../Functions/mysqli_fun.php');
 require('../Functions/page_builder.php');
 require('../Functions/urlLab.php');
 
@@ -119,16 +119,16 @@ END;
 				$temp=$_POST["requi$i"];
 				$requif="$requif"."$temp".",";
 			}
-			$nomef=mysql_escape_string($nomef);
-			$diagf=mysql_escape_string($diagf);
-			$descf=mysql_escape_string($descf);
-			$pref=mysql_escape_string($pref);
-			$postf=mysql_escape_string($postf);
-			$princf=mysql_escape_string($princf);
-			$inclusionif=mysql_escape_string($inclusionif);
-			$estensionif=mysql_escape_string($estensionif);
-			$altef=mysql_escape_string($altef);
 			$conn=sql_conn();
+			$nomef=$conn->real_escape_string($nomef);
+			$diagf=$conn->real_escape_string($diagf);
+			$descf=$conn->real_escape_string($descf);
+			$pref=$conn->real_escape_string($pref);
+			$postf=$conn->real_escape_string($postf);
+			$princf=$conn->real_escape_string($princf);
+			$inclusionif=$conn->real_escape_string($inclusionif);
+			$estensionif=$conn->real_escape_string($estensionif);
+			$altef=$conn->real_escape_string($altef);
 			$query="CALL insertUseCase('$nomef',";
 			if($diagf==null){
 				$query=$query."null,";
@@ -163,7 +163,7 @@ END;
 				$query=$query."'$altef',";
 			}
 			$query=$query."'$requif','$attorif','$_SESSION[user]')";
-			$query=mysql_query($query,$conn) or fail("Query fallita: ".mysql_error($conn));
+			$query=  $conn->query($query) or die("Query fallita: ".mysqli_error($conn));
 			$title="Use Case Inserito";
 			startpage_builder($title);
 echo<<<END
@@ -217,9 +217,9 @@ END;
 		$query="SELECT u.CodAuto, u.IdUC
 				FROM _MapUseCase h JOIN UseCase u ON h.CodAuto=u.CodAuto
 				ORDER BY h.Position";
-		//$ord=mysql_query($query_ord,$conn) or fail("Query fallita: ".mysql_error($conn));
-		$uc=mysql_query($query,$conn) or fail("Query fallita: ".mysql_error($conn));
-		while($row=mysql_fetch_row($uc)){
+		//$ord=mysqli_query($query_ord,$conn) or die("Query fallita: ".mysqli_error($conn));
+		$uc=  $conn->query($query) or die("Query fallita: ".mysqli_error($conn));
+		while($row=mysqli_fetch_row($uc)){
 echo<<<END
 
 									<option value="$row[0]">$row[1]</option>
@@ -255,8 +255,8 @@ END;
 		$query="SELECT a.CodAuto, a.Nome
 				FROM Attori a
 				ORDER BY a.Nome";
-		$attori=mysql_query($query,$conn) or fail("Query fallita: ".mysql_error($conn));
-		while($row=mysql_fetch_row($attori)){
+		$attori=  $conn->query($query) or die("Query fallita: ".mysqli_error($conn));
+		while($row=mysqli_fetch_row($attori)){
 			if($row[0]!=null){
 echo<<<END
 
@@ -278,9 +278,9 @@ END;
 		$query="SELECT r.CodAuto, r.IdRequisito
 				FROM _MapRequisiti h JOIN Requisiti r ON h.CodAuto=r.CodAuto
 				ORDER BY h.Position";
-		//$ord=mysql_query($query_ord,$conn) or fail("Query fallita: ".mysql_error($conn));
-		$requi=mysql_query($query,$conn) or fail("Query fallita: ".mysql_error($conn));
-		while($row=mysql_fetch_row($requi)){
+		//$ord=mysqli_query($query_ord,$conn) or die("Query fallita: ".mysqli_error($conn));
+		$requi=  $conn->query($query) or die("Query fallita: ".mysqli_error($conn));
+		while($row=mysqli_fetch_row($requi)){
 			if($row[0]!=null){
 echo<<<END
 

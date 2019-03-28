@@ -1,6 +1,6 @@
 <?php
 
-require('../Functions/mysql_fun.php');
+require('../Functions/mysqli_fun.php');
 require('../Functions/page_builder.php');
 require('../Functions/urlLab.php'); 
 
@@ -91,8 +91,8 @@ else{
 			$query="SELECT p.RelationType,p.PrefixNome
 					FROM Package p
 					WHERE p.CodAuto='$padref'";
-			$ris=mysql_query($query,$conn) or fail("Query fallita: ".mysql_error($conn));
-			$row=mysql_fetch_row($ris);
+			$ris=  $conn->query($query) or die("Query fallita: ".mysqli_error($conn));
+			$row=mysqli_fetch_row($ris);
 			if($row[0]==null){
 				$err_padre=true;
 				$errori++;
@@ -101,16 +101,16 @@ else{
 				$prefixPadre="$row[1]::";
 			}
 		}
-		$nomef=mysql_escape_string($nomef);
-		$descf=mysql_escape_string($descf);
-		$diagf=mysql_escape_string($diagf);
+		$conn=sql_conn();
+		$nomef=$conn->real_escape_string($nomef);
+		$descf=$conn->real_escape_string($descf);
+		$diagf=$conn->real_escape_string($diagf);
 		if($old_prefixNomef!=($prefixPadre.$nomef)){
-			$conn=sql_conn();
 			$query="SELECT COUNT(*)
 					FROM Package p
 					WHERE p.PrefixNome='$prefixPadre"."$nomef'";
-			$ris=mysql_query($query,$conn) or fail("Query fallita: ".mysql_error($conn));
-			$row=mysql_fetch_row($ris);
+			$ris=  $conn->query($query) or die("Query fallita: ".mysqli_error($conn));
+			$row=mysqli_fetch_row($ris);
 			if($row[0]>0){
 				$err_presente=true;
 				$errori++;
@@ -166,8 +166,8 @@ END;
 			$timestamp_query="SELECT p.Time
 							  FROM Package p
 							  WHERE p.CodAuto='$id'";
-			$timestamp_query=mysql_query($timestamp_query,$conn) or fail("Query fallita: ".mysql_error($conn));
-			if($row=mysql_fetch_row($timestamp_query)){
+			$timestamp_query=$conn->query($timestamp_query) or die("Query fallita: ".mysqli_error($conn));
+			if($row=mysqli_fetch_row($timestamp_query)){
 				$timestamp_db=$row[0];
 				$timestamp_db=strtotime($timestamp_db);
 				if($timestampf<$timestamp_db){
@@ -217,7 +217,7 @@ END;
 							$query1=$query1."'$padref',";
 						}
 						$query1=$query1."'P')";
-						$query1=mysql_query($query1,$conn) or fail("Query fallita: Modifica Package Fallita - ".mysql_error($conn));
+						$query1=$conn->query($query1) or die("Query fallita: Modifica Package Fallita - ".mysqli_error($conn));
 					}
 					if($modifica_pkg==true){
 						if($num_pkgf>0){
@@ -226,7 +226,7 @@ END;
 						else{
 							$query2="CALL removeRelatedPackage('$id')";
 						}
-						$query2=mysql_query($query2,$conn) or fail("Query fallita: Modifica Package Correlati Fallita - ".mysql_error($conn));
+						$query2=$conn->query($query2) or die("Query fallita: Modifica Package Correlati Fallita - ".mysqli_error($conn));
 					}
 					/*if($modifica_requi==true){
 						if($num_requif>0){
@@ -235,7 +235,7 @@ END;
 						else{
 							$query3="CALL removePackageRequisiti('$id')";
 						}
-						$query3=mysql_query($query3,$conn) or fail("Query fallita: Inserimento Requisiti Correlati Fallito - ".mysql_error($conn));
+						$query3=mysqli_query($query3,$conn) or die("Query fallita: Inserimento Requisiti Correlati Fallito - ".mysqli_error($conn));
 					}*/
 					$title="Package Modificato";
 					startpage_builder($title);
@@ -263,14 +263,14 @@ END;
 	}
 	else{
 		$id=$_GET['id'];
-		$id=mysql_escape_string($id);
 		$conn=sql_conn();
+		$id=$conn->real_escape_string($id);
 		$query="SELECT p1.CodAuto,p1.PrefixNome,p1.Nome,p1.Descrizione,p1.Padre,p1.UML
 				FROM Package p1
 				WHERE p1.CodAuto='$id'";
-		$pack=mysql_query($query,$conn) or fail("Query fallita: ".mysql_error($conn));
+		$pack=  $conn->query($query) or die("Query fallita: ".mysqli_error($conn));
 		$timestamp=time();
-		$packdb=mysql_fetch_row($pack);
+		$packdb=mysqli_fetch_row($pack);
 		if($packdb[0]==$id){
 			$title="Modifica Package - $packdb[1]";
 			startpage_builder($title);
@@ -299,8 +299,8 @@ END;
 					FROM Package p
 					ORDER BY p.PrefixNome"; //Query per recuperare l'id di tutti i package
 					//in modo che $row[0] sia l'id e che $row[1] sia il [prefisso::]nome 
-			$father=mysql_query($query,$conn) or fail("Query fallita: ".mysql_error($conn));
-			while($row=mysql_fetch_row($father)){
+			$father=  $conn->query($query) or die("Query fallita: ".mysqli_error($conn));
+			while($row=mysqli_fetch_row($father)){
 				if(($row[0]!=null) && ($row[0]!=$packdb[0])){
 					if($row[0]==$packdb[4]){
 echo<<<END
@@ -332,9 +332,9 @@ END;
 					FROM Package p
 					WHERE p.CodAuto<>'$id'
 					ORDER BY p.PrefixNome";
-			$tutti_pkg_query=mysql_query($query,$conn) or fail("Query fallita: ".mysql_error($conn));
+			$tutti_pkg_query=  $conn->query($query) or die("Query fallita: ".mysqli_error($conn));
 			$tutti_pkg=array();
-			while($row=mysql_fetch_row($tutti_pkg_query)){
+			while($row=mysqli_fetch_row($tutti_pkg_query)){
 				$tutti_pkg["$row[1]"]=$row[0];
 			}
 			$query="SELECT p.CodAuto,p.PrefixNome
@@ -345,11 +345,11 @@ END;
 					FROM RelatedPackage rp JOIN Package p ON rp.Pack1=p.CodAuto
 					WHERE rp.Pack2='$id'
 					ORDER BY PrefixNome";
-			$pkg_query=mysql_query($query,$conn) or fail("Query fallita: ".mysql_error($conn));
+			$pkg_query=  $conn->query($query) or die("Query fallita: ".mysqli_error($conn));
 			$pkg=array();
 			$listaoldpkg="";
 			$i=0;
-			while($row=mysql_fetch_row($pkg_query)){
+			while($row=mysqli_fetch_row($pkg_query)){
 				$pkg["$row[1]"]=$row[0];
 				$listaoldpkg=($listaoldpkg.$row[0]).",";
 			}
@@ -409,10 +409,10 @@ END;
 			$query="SELECT r.CodAuto,r.IdRequisito
 					FROM _MapRequisiti h JOIN Requisiti r ON h.CodAuto=r.CodAuto
 					ORDER BY h.Position";
-			//$ord=mysql_query($query_ord,$conn) or fail("Query fallita: ".mysql_error($conn));
-			$tutti_requi_query=mysql_query($query,$conn) or fail("Query fallita: ".mysql_error($conn));
+			//$ord=mysqli_query($query_ord,$conn) or die("Query fallita: ".mysqli_error($conn));
+			$tutti_requi_query=  $conn->query($query) or die("Query fallita: ".mysqli_error($conn));
 			$tutti_requi=array();
-			while($row=mysql_fetch_row($tutti_requi_query)){
+			while($row=mysqli_fetch_row($tutti_requi_query)){
 				$tutti_requi["$row[1]"]=$row[0];
 			}
 			//$query_update="CALL automatizeRequisitiPackage()";
@@ -420,12 +420,12 @@ END;
 					FROM RequisitiPackage rp JOIN (_MapRequisiti h JOIN Requisiti r ON h.CodAuto=r.CodAuto) ON rp.CodReq=r.CodAuto
 					WHERE rp.CodPkg='$id'
 					ORDER BY h.Position";
-			//$upd=mysql_query($query_update,$conn) or fail("Query fallita: ".mysql_error($conn));
-			$requi_query=mysql_query($query,$conn) or fail("Query fallita: ".mysql_error($conn));
+			//$upd=mysqli_query($query_update,$conn) or die("Query fallita: ".mysqli_error($conn));
+			$requi_query=  $conn->query($query) or die("Query fallita: ".mysqli_error($conn));
 			$requi=array();
 			$listaoldrequi="";
 			$j=0;
-			while($row=mysql_fetch_row($requi_query)){
+			while($row=mysqli_fetch_row($requi_query)){
 				$requi["$row[1]"]=$row[0];
 				$listaoldrequi=($listaoldrequi.$row[0]).",";
 			}

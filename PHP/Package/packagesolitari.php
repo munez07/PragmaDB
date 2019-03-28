@@ -1,6 +1,6 @@
 <?php
 
-require('../Functions/mysql_fun.php');
+require('../Functions/mysqli_fun.php');
 require('../Functions/page_builder.php');
 require('../Functions/urlLab.php');
 
@@ -18,8 +18,8 @@ else{
 			FROM Package p1 LEFT JOIN Package p2 ON p1.Padre=p2.CodAuto
 			WHERE p1.CodAuto NOT IN (SELECT rp.CodPkg FROM RequisitiPackage rp)
 			ORDER BY p1.PrefixNome";
-	//$upd=mysql_query($query_update,$conn) or fail("Query fallita: ".mysql_error($conn));
-	$pack=mysql_query($query,$conn) or fail("Query fallita: ".mysql_error($conn));
+	//$upd=mysqli_query($query_update,$conn) or die("Query fallita: ".mysqli_error($conn));
+	$pack=  $conn->query($query) or die("Query fallita: ".mysqli_error($conn));
 	$title="Package Solitari";
 	startpage_builder($title);
 echo<<<END
@@ -39,7 +39,7 @@ echo<<<END
 					</thead>
 					<tbody>
 END;
-	while($row=mysql_fetch_row($pack)){
+	while($row=mysqli_fetch_row($pack)){
 echo<<<END
 
 						<tr>

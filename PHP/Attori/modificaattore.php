@@ -1,6 +1,6 @@
 <?php
 
-require('../Functions/mysql_fun.php');
+require('../Functions/mysqli_fun.php');
 require('../Functions/page_builder.php');
 require('../Functions/urlLab.php');
 
@@ -35,14 +35,14 @@ echo<<<END
 END;
 		}
 		else{
-			$nomef=mysql_escape_string($nomef);
-			$descf=mysql_escape_string($descf);
 			$conn=sql_conn();
+			$nomef = $conn->real_escape_string($nomef);
+			$descf = $conn->real_escape_string($descf);
 			$timestamp_query="SELECT a.Time
 							  FROM Attori a
 							  WHERE a.CodAuto='$id'";
-			$timestamp_query=mysql_query($timestamp_query,$conn) or fail("Query fallita: ".mysql_error($conn));
-			if($row=mysql_fetch_row($timestamp_query)){
+			$timestamp_query=$conn->query($timestamp_query) or die("Query fallita: ".mysqli_error($conn));
+			if($row=mysqli_fetch_row($timestamp_query)){
 				$timestamp_db=$row[0];
 				$timestamp_db=strtotime($timestamp_db);
 				if($timestampf<$timestamp_db){
@@ -57,7 +57,7 @@ END;
 				}
 				else{
 					$query="CALL modifyAttore('$id','$nomef','$descf');";
-					$query=mysql_query($query,$conn) or fail("Query fallita: ".mysql_error($conn));
+					$query=  $conn->query($query) or die("Query fallita: ".mysqli_error($conn));
 					$title="Attore Modificato";
 					startpage_builder($title);
 echo<<<END
@@ -84,14 +84,14 @@ END;
 	}
 	else{
 		$id=$_GET['id'];
-		$id=mysql_escape_string($id);
 		$conn=sql_conn();
+		$id = $conn->real_escape_string($id);
 		$query="SELECT a.CodAuto, a.Nome, a.Descrizione, a.Time
 				FROM Attori a
 				WHERE a.CodAuto='$id'";
-		$att=mysql_query($query,$conn) or fail("Query fallita: ".mysql_error($conn));
+		$att=  $conn->query($query) or die("Query fallita: ".mysqli_error($conn));
 		$timestamp=time();
-		$row=mysql_fetch_row($att);
+		$row=mysqli_fetch_row($att);
 		if($row[0]==$id){
 			$title="Modifica Attore - $row[1]";
 			startpage_builder($title);

@@ -1,6 +1,6 @@
 <?php
 
-require('../../Functions/mysql_fun.php');
+require('../../Functions/mysqli_fun.php');
 require('../../Functions/page_builder.php');
 require('../../Functions/urlLab.php');
 
@@ -78,10 +78,10 @@ echo<<<END
 END;
 	$conn=sql_conn();
 	$first=true;
-	//$ord=mysql_query($query_ord,$conn) or fail("Query fallita: ".mysql_error($conn));
+	//$ord=mysqli_query($query_ord,$conn) or die("Query fallita: ".mysqli_error($conn));
 	foreach($queries_nsup as $ind => $query){
-		$ris=mysql_query($query,$conn) or fail("Query fallita: ".mysql_error($conn));
-		if($row=mysql_fetch_row($ris)){
+		$ris=  $conn->query($query) or die("Query fallita: ".mysqli_error($conn));
+		if($row=mysqli_fetch_row($ris)){
 			if($first){
 echo<<<END
 
@@ -118,7 +118,7 @@ echo<<<END
 							</td>
 						</tr>
 END;
-			while($row=mysql_fetch_row($ris)){
+			while($row=mysqli_fetch_row($ris)){
 echo<<<END
 
 						<tr>
@@ -144,8 +144,8 @@ END;
 	}
 	$first=true;
 	foreach($queries_sup as $ind => $query){
-		$ris=mysql_query($query,$conn) or fail("Query fallita: ".mysql_error($conn));
-		if($row=mysql_fetch_row($ris)){
+		$ris=  $conn->query($query) or die("Query fallita: ".mysqli_error($conn));
+		if($row=mysqli_fetch_row($ris)){
 			if($first){
 echo<<<END
 
@@ -182,7 +182,7 @@ echo<<<END
 							</td>
 						</tr>
 END;
-			while($row=mysql_fetch_row($ris)){
+			while($row=mysqli_fetch_row($ris)){
 echo<<<END
 
 						<tr>

@@ -1,6 +1,6 @@
 <?php
 
-require('../Functions/mysql_fun.php');
+require('../Functions/mysqli_fun.php');
 require('../Functions/page_builder.php');
 require('../Functions/urlLab.php');
 
@@ -17,7 +17,7 @@ else{
 	$query="SELECT p1.CodAuto,p1.PrefixNome,p1.Nome,p1.Descrizione,p2.PrefixNome,p1.UML,p2.CodAuto
 			FROM Package p1 LEFT JOIN Package p2 ON p1.Padre=p2.CodAuto
 			ORDER BY p1.PrefixNome";
-	$pack=mysql_query($query,$conn) or fail("Query fallita: ".mysql_error($conn));
+	$pack=  $conn->query($query) or die("Query fallita: ".mysqli_error($conn));
 	$title="Package";
 	startpage_builder($title);
 /*							<li><a class="link-color-pers" href="$absurl/Package/LaTeX/getpackageclassistbe.php">Package/Classi ST (Back-End)</a></li>
@@ -61,7 +61,7 @@ echo<<<END
 					</thead>
 					<tbody>
 END;
-	while($row=mysql_fetch_row($pack)){
+	while($row=mysqli_fetch_row($pack)){
 echo<<<END
 
 						<tr>

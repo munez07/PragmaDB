@@ -1,6 +1,6 @@
 <?php
 
-require('../../Functions/mysql_fun.php');
+require('../../Functions/mysqli_fun.php');
 require('../../Functions/page_builder.php');
 require('../../Functions/urlLab.php');
 
@@ -24,8 +24,8 @@ else{
 		$timestamp_query="SELECT c.Time
 							FROM Classe c
 							WHERE c.CodAuto='$cl'"; //Query che recupera il timestamp dell'utlima modifica al db di $id
-		$timestamp_query=mysql_query($timestamp_query,$conn) or fail("Query fallita: ".mysql_error($conn));
-		if($row=mysql_fetch_row($timestamp_query)){
+		$timestamp_query=$conn->query($timestamp_query) or die("Query fallita: ".mysqli_error($conn));
+		if($row=mysqli_fetch_row($timestamp_query)){
 			$timestamp_db=$row[0];
 			$timestamp_db=strtotime($timestamp_db);
 			if($timestampf<$timestamp_db){
@@ -42,7 +42,7 @@ END;
 			}
 			else{
 				$query="CALL removeMetodo('$id','$cl')"; //Chiama la SP per la rimozione
-				$query=mysql_query($query,$conn) or fail("Query fallita: ".mysql_error($conn));
+				$query=  $conn->query($query) or die("Query fallita: ".mysqli_error($conn));
 				$title="Metodo Eliminato";
 				startpage_builder($title);
 echo<<<END
@@ -72,14 +72,14 @@ END;
 	else{
 		//L'utente non ha ancora scelto se eliminare o meno, gli stampo quello che sta cercando di eliminare e un form per scegliere
 		$id=$_GET['id'];
-		$id=mysql_escape_string($id);
 		$conn=sql_conn();
+		$id = $conn->real_escape_string($id);
 		$query="SELECT m.CodAuto, m.AccessMod, m.Nome, m.ReturnType, m.Descrizione, c.PrefixNome, m.Classe
 				FROM Metodo m JOIN Classe c ON m.Classe=c.CodAuto
 				WHERE m.CodAuto='$id'"; //Query per recuperare il metodo
-		$met=mysql_query($query,$conn) or fail("Query fallita: ".mysql_error($conn));
+		$met=  $conn->query($query) or die("Query fallita: ".mysqli_error($conn));
 		$timestamp=time();
-		$row=mysql_fetch_row($met);
+		$row=mysqli_fetch_row($met);
 		if($row[0]==$id){
 			$title="$row[5] - Elimina $row[2]";
 			startpage_builder($title);

@@ -1,7 +1,7 @@
 <?php
 
 require('../../Functions/get_tex.php');
-require('../../Functions/mysql_fun.php');
+require('../../Functions/mysqli_fun.php');
 require('../../Functions/urlLab.php');
 
 session_start();
@@ -21,7 +21,7 @@ else{
 	$query_met="SELECT DISTINCT m.CodAuto,m.AccessMod,m.Nome,m.ReturnType, c.PrefixNome, c.CodAuto
 			   FROM (TestMetodi tm JOIN Metodo m ON tm.CodMet=m.CodAuto) JOIN Classe c ON m.Classe=c.CodAuto
 			   ORDER BY c.PrefixNome, m.Nome";
-	$met=mysql_query($query_met,$conn) or fail("Query fallita: ".mysql_error($conn));
+	$met=$conn->query($query_met) or die("Query fallita: ".mysqli_error($conn));
 echo<<<END
 \\subsection{Tracciamento Metodi-Test di Unità}
 \\normalsize
@@ -31,18 +31,18 @@ echo<<<END
 \\hline
 \\endhead
 END;
-	while($riga=mysql_fetch_row($met)){
+	while($riga=mysqli_fetch_row($met)){
 		$prefix=$riga[4]."::".$riga[2]."()";
 		$prefix=fixMethodIntoBorder($prefix);
 		$query_tu="SELECT DISTINCT t.IdTest
 				   FROM TestMetodi tm JOIN Test t ON tm.CodTest=t.CodAuto
 				   WHERE tm.CodMet='$riga[0]'
 				   ORDER BY CONVERT(SUBSTRING(t.IdTest,3),UNSIGNED INT)";
-		$tu=mysql_query($query_tu,$conn) or fail("Query fallita: ".mysql_error($conn));
+		$tu=$conn->query($query_tu) or die("Query fallita: ".mysqli_error($conn));
 echo<<<END
 \\nogloxy{\\texttt{{$prefix}}}
 END;
-		while($row_tu = mysql_fetch_row($tu)){
+		while($row_tu = mysqli_fetch_row($tu)){
 echo<<<END
  & \\hyperlink{{$row_tu[0]}}{{$row_tu[0]}}\\\
 END;

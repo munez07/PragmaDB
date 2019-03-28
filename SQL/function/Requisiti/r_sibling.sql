@@ -17,7 +17,7 @@ DELIMITER $
 
 /*invocato solo su figli*/
 DROP FUNCTION IF EXISTS getNextSibling $
-CREATE FUNCTION getNextSibling ( IdRequisito VARCHAR(20)) RETURNS VARCHAR(20)
+CREATE FUNCTION getNextSibling ( IdRequisito VARCHAR(20)) RETURNS VARCHAR(20) DETERMINISTIC
 BEGIN
     DECLARE existence INT(1);
     IF LOCATE('.',IdRequisito) > 0

@@ -1,6 +1,6 @@
 <?php
 
-require('../Functions/mysql_fun.php');
+require('../Functions/mysqli_fun.php');
 require('../Functions/page_builder.php');
 require('../Functions/urlLab.php');
 
@@ -14,7 +14,8 @@ if(empty($_SESSION['user'])){
 else{
 	if(isset($_REQUEST['submit'])){
 		$id=$_GET['id'];
-		$id=mysql_escape_string($id);
+		$conn = sql_conn();
+		$id = $conn->real_escape_string($id);
 		$identificativof=$_POST["identificativo"];
 		$namef=$_POST["name"];
 		$descf=$_POST["desc"];
@@ -85,20 +86,20 @@ echo<<<END
 END;
 		}
 		else{
-			$identificativof=lcfirst($identificativof);
-			$identificativof=mysql_escape_string($identificativof);
-			$namef=mysql_escape_string($namef);
-			$descf=mysql_escape_string($descf);
-			$firstf=mysql_escape_string($firstf);
-			$firstpluralf=mysql_escape_string($firstpluralf);
-			$textf=mysql_escape_string($textf);
-			$pluralf=mysql_escape_string($pluralf);
 			$conn=sql_conn();
+			$identificativof=lcfirst($identificativof);
+			$identificativof=$conn->real_escape_string($identificativof);
+			$namef=$conn->real_escape_string($namef);
+			$descf=$conn->real_escape_string($descf);
+			$firstf=$conn->real_escape_string($firstf);
+			$firstpluralf=$conn->real_escape_string($firstpluralf);
+			$textf=$conn->real_escape_string($textf);
+			$pluralf=$conn->real_escape_string($pluralf);
 			$timestamp_query="SELECT g.Time
 							  FROM Glossario g
 							  WHERE g.CodAuto='$id'";
-			$timestamp_query=mysql_query($timestamp_query,$conn) or fail("Query fallita: ".mysql_error($conn));
-			if($row=mysql_fetch_row($timestamp_query)){
+			$timestamp_query=$conn->query($timestamp_query) or die("Query fallita: ".mysqli_error($conn));
+			if($row=mysqli_fetch_row($timestamp_query)){
 				$timestamp_db=$row[0];
 				$timestamp_db=strtotime($timestamp_db);
 				if($timestampf<$timestamp_db){
@@ -144,7 +145,7 @@ END;
 					else{
 						$query=$query."'$pluralf')";
 					}
-					$query=mysql_query($query,$conn) or fail("Query fallita: ".mysql_error($conn));
+					$query=  $conn->query($query) or die("Query fallita: ".mysqli_error($conn));
 					$title="Termine Glossario Modificato";
 					startpage_builder($title);
 echo<<<END
@@ -171,14 +172,14 @@ END;
 	}
 	else{
 		$id=$_GET['id'];
-		$id=mysql_escape_string($id);
 		$conn=sql_conn();
+		$id=$conn->real_escape_string($id);
 		$query="SELECT g.CodAuto, g.IdTermine, g.Identificativo, g.Name, g.Description, g.First, g.FirstPlural, g.Text, g.Plural, g.Time
 				FROM Glossario g
 				WHERE g.CodAuto='$id'";
-		$glo=mysql_query($query,$conn) or fail("Query fallita: ".mysql_error($conn));
+		$glo=  $conn->query($query) or die("Query fallita: ".mysqli_error($conn));
 		$timestamp=time();
-		$row=mysql_fetch_row($glo);
+		$row=mysqli_fetch_row($glo);
 		if($row[0]==$id){
 			$title="Modifica Termine Glossario - $row[2]";
 			startpage_builder($title);

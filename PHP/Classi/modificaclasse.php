@@ -1,6 +1,6 @@
 <?php
 
-require('../Functions/mysql_fun.php');
+require('../Functions/mysqli_fun.php');
 require('../Functions/page_builder.php');
 require('../Functions/urlLab.php'); 
 
@@ -149,8 +149,8 @@ else{
 		$query="SELECT p.RelationType,p.PrefixNome
 				FROM Package p
 				WHERE p.CodAuto='$padref'";
-		$ris=mysql_query($query,$conn) or fail("Query fallita: ".mysql_error($conn));
-		$row=mysql_fetch_row($ris);
+		$ris=  $conn->query($query) or die("Query fallita: ".mysqli_error($conn));
+		$row=mysqli_fetch_row($ris);
 		if($row[0]==null){
 			$err_padre=true;
 			$errori++;
@@ -158,17 +158,17 @@ else{
 		else{
 			$prefixPadre="$row[1]::";
 		}
-		$nomef=mysql_escape_string($nomef);
-		$descf=mysql_escape_string($descf);
-		$utilf=mysql_escape_string($utilf);
-		$diagf=mysql_escape_string($diagf);
+		$conn=sql_conn();
+		$nomef = $conn->real_escape_string($nomef);
+		$descf = $conn->real_escape_string($descf);
+		$utilf = $conn->real_escape_string($utilf);
+		$diagf = $conn->real_escape_string($diagf);
 		if($old_prefixNomef!=($prefixPadre.$nomef)){
-			$conn=sql_conn();
 			$query="SELECT COUNT(*)
 					FROM Classe c
 					WHERE c.PrefixNome='$prefixPadre"."$nomef'";
-			$ris=mysql_query($query,$conn) or fail("Query fallita: ".mysql_error($conn));
-			$row=mysql_fetch_row($ris);
+			$ris=  $conn->query($query) or die("Query fallita: ".mysqli_error($conn));
+			$row=mysqli_fetch_row($ris);
 			if($row[0]>0){
 				$err_presente=true;
 				$errori++;
@@ -224,8 +224,8 @@ END;
 			$timestamp_query="SELECT c.Time
 							  FROM Classe c
 							  WHERE c.CodAuto='$id'";
-			$timestamp_query=mysql_query($timestamp_query,$conn) or fail("Query fallita: ".mysql_error($conn));
-			if($row=mysql_fetch_row($timestamp_query)){
+			$timestamp_query=$conn->query($timestamp_query) or die("Query fallita: ".mysqli_error($conn));
+			if($row=mysqli_fetch_row($timestamp_query)){
 				$timestamp_db=$row[0];
 				$timestamp_db=strtotime($timestamp_db);
 				if($timestampf<$timestamp_db){
@@ -277,7 +277,7 @@ END;
 						else{
 							$query1=$query1."'$diagf')";
 						}
-						$query1=mysql_query($query1,$conn) or fail("Query fallita: Modifica Classe Fallita - ".mysql_error($conn));
+						$query1=$conn->query($query1) or die("Query fallita: Modifica Classe Fallita - ".mysqli_error($conn));
 					}
 					if($modifica_clu==true){
 						if($num_cluf>0){
@@ -286,7 +286,7 @@ END;
 						else{
 							$query2="CALL removeEreditaDa('$id')";
 						}
-						$query2=mysql_query($query2,$conn) or fail("Query fallita: Modifica EreditaDa Fallita - ".mysql_error($conn));
+						$query2=$conn->query($query2) or die("Query fallita: Modifica EreditaDa Fallita - ".mysqli_error($conn));
 					}
 					if($modifica_cld==true){
 						if($num_cldf>0){
@@ -295,7 +295,7 @@ END;
 						else{
 							$query3="CALL removeEreditataDa('$id')";
 						}
-						$query3=mysql_query($query3,$conn) or fail("Query fallita: Modifica Ereditano da lei Fallita - ".mysql_error($conn));
+						$query3=$conn->query($query3) or die("Query fallita: Modifica Ereditano da lei Fallita - ".mysqli_error($conn));
 					}
 					if($modifica_clt==true){
 						if($num_cltf>0){
@@ -304,7 +304,7 @@ END;
 						else{
 							$query4="CALL removeRelazioneA('$id')";
 						}
-						$query4=mysql_query($query4,$conn) or fail("Query fallita: Modifica Relazioni IN Fallita - ".mysql_error($conn));
+						$query4=$conn->query($query4) or die("Query fallita: Modifica Relazioni IN Fallita - ".mysqli_error($conn));
 					}
 					if($modifica_clq==true){
 						if($num_clqf>0){
@@ -313,7 +313,7 @@ END;
 						else{
 							$query5="CALL removeRelazioneDa('$id')";
 						}
-						$query5=mysql_query($query5,$conn) or fail("Query fallita: Modifica Relazioni OUT Fallita - ".mysql_error($conn));
+						$query5=$conn->query($query5) or die("Query fallita: Modifica Relazioni OUT Fallita - ".mysqli_error($conn));
 					}
 					if($modifica_requi==true){
 						if($num_requif>0){
@@ -322,7 +322,7 @@ END;
 						else{
 							$query6="CALL removeClasseRequisiti('$id')";
 						}
-						$query6=mysql_query($query6,$conn) or fail("Query fallita: Modifica Requisiti Correlati Fallita - ".mysql_error($conn));
+						$query6=$conn->query($query6) or die("Query fallita: Modifica Requisiti Correlati Fallita - ".mysqli_error($conn));
 					}
 					$title="Classe Modificata";
 					startpage_builder($title);
@@ -350,14 +350,14 @@ END;
 	}
 	else{
 		$id=$_GET['id'];
-		$id=mysql_escape_string($id);
 		$conn=sql_conn();
+		$id = $conn->real_escape_string($id);
 		$query="SELECT c.CodAuto,c.PrefixNome,c.Nome,c.Descrizione,c.Utilizzo,c.ContenutaIn,c.UML
 				FROM Classe c
 				WHERE c.CodAuto='$id'";
-		$cl=mysql_query($query,$conn) or fail("Query fallita: ".mysql_error($conn));
+		$cl=  $conn->query($query) or die("Query fallita: ".mysqli_error($conn));
 		$timestamp=time();
-		$cldb=mysql_fetch_row($cl);
+		$cldb=mysqli_fetch_row($cl);
 		if($cldb[0]==$id){
 			$title="Modifica Classe - $cldb[1]";
 			startpage_builder($title);
@@ -389,8 +389,8 @@ END;
 					FROM Package p
 					ORDER BY p.PrefixNome"; //Query per recuperare l'id di tutti i package
 					//in modo che $row[0] sia l'id e che $row[1] sia il [prefisso::]nome 
-			$father=mysql_query($query,$conn) or fail("Query fallita: ".mysql_error($conn));
-			while($row=mysql_fetch_row($father)){
+			$father=  $conn->query($query) or die("Query fallita: ".mysqli_error($conn));
+			while($row=mysqli_fetch_row($father)){
 				if($row[0]!=null){
 					if($row[0]==$cldb[5]){
 echo<<<END
@@ -422,20 +422,20 @@ END;
 					FROM Classe c
 					WHERE c.CodAuto<>'$id'
 					ORDER BY c.PrefixNome";
-			$tutti_clu_query=mysql_query($query,$conn) or fail("Query fallita: ".mysql_error($conn));
+			$tutti_clu_query=  $conn->query($query) or die("Query fallita: ".mysqli_error($conn));
 			$tutti_clu=array();
-			while($row=mysql_fetch_row($tutti_clu_query)){
+			while($row=mysqli_fetch_row($tutti_clu_query)){
 				$tutti_clu["$row[1]"]=$row[0];
 			}
 			$query="SELECT c.CodAuto,c.PrefixNome
 					FROM EreditaDa ed JOIN Classe c ON ed.Padre=c.CodAuto
 					WHERE ed.Figlio='$id'
 					ORDER BY c.PrefixNome";
-			$clu_query=mysql_query($query,$conn) or fail("Query fallita: ".mysql_error($conn));
+			$clu_query=  $conn->query($query) or die("Query fallita: ".mysqli_error($conn));
 			$clu=array();
 			$listaoldclu="";
 			$i=0;
-			while($row=mysql_fetch_row($clu_query)){
+			while($row=mysqli_fetch_row($clu_query)){
 				$clu["$row[1]"]=$row[0];
 				$listaoldclu=($listaoldclu.$row[0]).",";
 			}
@@ -493,20 +493,20 @@ END;
 					FROM Classe c
 					WHERE c.CodAuto<>'$id'
 					ORDER BY c.PrefixNome";
-			$tutti_cld_query=mysql_query($query,$conn) or fail("Query fallita: ".mysql_error($conn));
+			$tutti_cld_query=  $conn->query($query) or die("Query fallita: ".mysqli_error($conn));
 			$tutti_cld=array();
-			while($row=mysql_fetch_row($tutti_cld_query)){
+			while($row=mysqli_fetch_row($tutti_cld_query)){
 				$tutti_cld["$row[1]"]=$row[0];
 			}
 			$query="SELECT c.CodAuto,c.PrefixNome
 					FROM EreditaDa ed JOIN Classe c ON ed.Figlio=c.CodAuto
 					WHERE ed.Padre='$id'
 					ORDER BY c.PrefixNome";
-			$cld_query=mysql_query($query,$conn) or fail("Query fallita: ".mysql_error($conn));
+			$cld_query=  $conn->query($query) or die("Query fallita: ".mysqli_error($conn));
 			$cld=array();
 			$listaoldcld="";
 			$j=0;
-			while($row=mysql_fetch_row($cld_query)){
+			while($row=mysqli_fetch_row($cld_query)){
 				$cld["$row[1]"]=$row[0];
 				$listaoldcld=($listaoldcld.$row[0]).",";
 			}
@@ -564,20 +564,20 @@ END;
 					FROM Classe c
 					WHERE c.CodAuto<>'$id'
 					ORDER BY c.PrefixNome";
-			$tutti_clt_query=mysql_query($query,$conn) or fail("Query fallita: ".mysql_error($conn));
+			$tutti_clt_query=  $conn->query($query) or die("Query fallita: ".mysqli_error($conn));
 			$tutti_clt=array();
-			while($row=mysql_fetch_row($tutti_clt_query)){
+			while($row=mysqli_fetch_row($tutti_clt_query)){
 				$tutti_clt["$row[1]"]=$row[0];
 			}
 			$query="SELECT c.CodAuto,c.PrefixNome
 					FROM Relazione r JOIN Classe c ON r.Da=c.CodAuto
 					WHERE r.A='$id'
 					ORDER BY c.PrefixNome";
-			$clt_query=mysql_query($query,$conn) or fail("Query fallita: ".mysql_error($conn));
+			$clt_query=  $conn->query($query) or die("Query fallita: ".mysqli_error($conn));
 			$clt=array();
 			$listaoldclt="";
 			$k=0;
-			while($row=mysql_fetch_row($clt_query)){
+			while($row=mysqli_fetch_row($clt_query)){
 				$clt["$row[1]"]=$row[0];
 				$listaoldclt=($listaoldclt.$row[0]).",";
 			}
@@ -635,20 +635,20 @@ END;
 					FROM Classe c
 					WHERE c.CodAuto<>'$id'
 					ORDER BY c.PrefixNome";
-			$tutti_clq_query=mysql_query($query,$conn) or fail("Query fallita: ".mysql_error($conn));
+			$tutti_clq_query=  $conn->query($query) or die("Query fallita: ".mysqli_error($conn));
 			$tutti_clq=array();
-			while($row=mysql_fetch_row($tutti_clq_query)){
+			while($row=mysqli_fetch_row($tutti_clq_query)){
 				$tutti_clq["$row[1]"]=$row[0];
 			}
 			$query="SELECT c.CodAuto,c.PrefixNome
 					FROM Relazione r JOIN Classe c ON r.A=c.CodAuto
 					WHERE r.Da='$id'
 					ORDER BY c.PrefixNome";
-			$clq_query=mysql_query($query,$conn) or fail("Query fallita: ".mysql_error($conn));
+			$clq_query=  $conn->query($query) or die("Query fallita: ".mysqli_error($conn));
 			$clq=array();
 			$listaoldclq="";
 			$l=0;
-			while($row=mysql_fetch_row($clq_query)){
+			while($row=mysqli_fetch_row($clq_query)){
 				$clq["$row[1]"]=$row[0];
 				$listaoldclq=($listaoldclq.$row[0]).",";
 			}
@@ -706,21 +706,21 @@ END;
 			$query="SELECT r.CodAuto,r.IdRequisito
 					FROM _MapRequisiti h JOIN Requisiti r ON h.CodAuto=r.CodAuto
 					ORDER BY h.Position";
-			//$ord=mysql_query($query_ord,$conn) or fail("Query fallita: ".mysql_error($conn));
-			$tutti_requi_query=mysql_query($query,$conn) or fail("Query fallita: ".mysql_error($conn));
+			//$ord=mysqli_query($query_ord,$conn) or die("Query fallita: ".mysqli_error($conn));
+			$tutti_requi_query=  $conn->query($query) or die("Query fallita: ".mysqli_error($conn));
 			$tutti_requi=array();
-			while($row=mysql_fetch_row($tutti_requi_query)){
+			while($row=mysqli_fetch_row($tutti_requi_query)){
 				$tutti_requi["$row[1]"]=$row[0];
 			}
 			$query="SELECT r.CodAuto,r.IdRequisito
 					FROM RequisitiClasse rc JOIN (_MapRequisiti h JOIN Requisiti r ON h.CodAuto=r.CodAuto) ON rc.CodReq=r.CodAuto
 					WHERE rc.CodClass='$id'
 					ORDER BY h.Position";
-			$requi_query=mysql_query($query,$conn) or fail("Query fallita: ".mysql_error($conn));
+			$requi_query=  $conn->query($query) or die("Query fallita: ".mysqli_error($conn));
 			$requi=array();
 			$listaoldrequi="";
 			$m=0;
-			while($row=mysql_fetch_row($requi_query)){
+			while($row=mysqli_fetch_row($requi_query)){
 				$requi["$row[1]"]=$row[0];
 				$listaoldrequi=($listaoldrequi.$row[0]).",";
 			}

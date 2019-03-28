@@ -1,6 +1,6 @@
 <?php
 
-require('../../Functions/mysql_fun.php');
+require('../../Functions/mysqli_fun.php');
 require('../../Functions/urlLab.php');
 
 session_start();
@@ -22,8 +22,8 @@ else{
 			   FROM Test t JOIN (_MapRequisiti h JOIN Requisiti r ON h.CodAuto=r.CodAuto) ON t.Requisito=r.CodAuto
 			   WHERE t.Tipo='Sistema'
 			   ORDER BY h.Position";
-	//$ord=mysql_query($query_ord,$conn) or fail("Query fallita: ".mysql_error($conn));
-	$ts=mysql_query($query_ts,$conn) or fail("Query fallita: ".mysql_error($conn));
+	//$ord=mysqli_query($query_ord,$conn) or die("Query fallita: ".mysqli_error($conn));
+	$ts=$conn->query($query_ts) or die("Query fallita: ".mysqli_error($conn));
 echo<<<END
 \\subsection{Tracciamento Test di Sistema-Requisiti}
 \\normalsize
@@ -33,7 +33,7 @@ echo<<<END
 \\hline
 \\endhead
 END;
-	while($row_ts=mysql_fetch_row($ts)){
+	while($row_ts=mysqli_fetch_row($ts)){
 echo<<<END
 
 \\hyperlink{{$row_ts[0]}}{{$row_ts[0]}} & $row_ts[1]\\\ \\hline

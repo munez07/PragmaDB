@@ -1,6 +1,6 @@
 <?php
 
-require('../Functions/mysql_fun.php');
+require('../Functions/mysqli_fun.php');
 require('../Functions/page_builder.php');
 require('../Functions/urlLab.php'); 
 
@@ -41,8 +41,8 @@ else{
 			$query="SELECT p.RelationType,p.PrefixNome
 					FROM Package p
 					WHERE p.CodAuto='$padref'";
-			$ris=mysql_query($query,$conn) or fail("Query fallita: ".mysql_error($conn));
-			$row=mysql_fetch_row($ris);
+			$ris=  $conn->query($query) or die("Query fallita: ".mysqli_error($conn));
+			$row=mysqli_fetch_row($ris);
 			if($row[0]==null){
 				$err_padre=true;
 				$errori++;
@@ -51,15 +51,15 @@ else{
 				$prefixPadre="$row[1]::";
 			}
 		}
-		$nomef=mysql_escape_string($nomef);
-		$descf=mysql_escape_string($descf);
-		$diagf=mysql_escape_string($diagf);
 		$conn=sql_conn();
+		$nomef=$conn->real_escape_string($nomef);
+		$descf=$conn->real_escape_string($descf);
+		$diagf=$conn->real_escape_string($diagf);
 		$query="SELECT COUNT(*)
 				FROM Package p
 				WHERE p.PrefixNome='$prefixPadre"."$nomef'";
-		$ris=mysql_query($query,$conn) or fail("Query fallita: ".mysql_error($conn));
-		$row=mysql_fetch_row($ris);
+		$ris=  $conn->query($query) or die("Query fallita: ".mysqli_error($conn));
+		$row=mysqli_fetch_row($ris);
 		if($row[0]>0){
 			$err_presente=true;
 			$errori++;
@@ -130,25 +130,25 @@ END;
 				$query1=$query1."'$padref',";
 			}			
 			$query1=$query1."'P')";
-			$query1=mysql_query($query1,$conn) or fail("Query fallita: Inserimento Package Fallito - ".mysql_error($conn));
+			$query1=$conn->query($query1) or die("Query fallita: Inserimento Package Fallito - ".mysqli_error($conn));
 			$queryCod="SELECT p.CodAuto
 						FROM Package p
 						WHERE p.PrefixNome='$prefixPadre"."$nomef'";
-			$queryCod=mysql_query($queryCod,$conn) or fail("Query fallita: Package non trovato nel DB - ".mysql_error($conn));
-			$row=mysql_fetch_row($queryCod);
+			$queryCod=$conn->query($queryCod) or die("Query fallita: Package non trovato nel DB - ".mysqli_error($conn));
+			$row=mysqli_fetch_row($queryCod);
 			if($row[0]!=null){
 				$cod=$row[0];
 			}
 			else{
-				fail("Query fallita: Package non trovato nel DB");
+				die("Query fallita: Package non trovato nel DB");
 			}
 			if($num_pkgf>0){
 				$query2="CALL insertRelatedPackage('$cod','$pkgf')";
-				$query2=mysql_query($query2,$conn) or fail("Query fallita: Inserimento Package Correlati Fallito - ".mysql_error($conn));
+				$query2=$conn->query($query2) or die("Query fallita: Inserimento Package Correlati Fallito - ".mysqli_error($conn));
 			}
 			/*if($num_requif>0){
 				$query3="CALL insertPackageRequisiti('$cod','$requif')";
-				$query3=mysql_query($query3,$conn) or fail("Query fallita: Inserimento Requisiti Correlati Fallito - ".mysql_error($conn));
+				$query3=mysqli_query($query3,$conn) or die("Query fallita: Inserimento Requisiti Correlati Fallito - ".mysqli_error($conn));
 			}*/
 			$title="Package Inserito";
 			startpage_builder($title);
@@ -192,8 +192,8 @@ END;
 				FROM Package p
 				ORDER BY p.PrefixNome"; //Query per recuperare l'id di tutti i package
 					//in modo che $row[0] sia l'id e che $row[1] sia il [prefisso::]nome 
-		$father=mysql_query($query,$conn) or fail("Query fallita: ".mysql_error($conn));
-		while($row=mysql_fetch_row($father)){
+		$father=  $conn->query($query) or die("Query fallita: ".mysqli_error($conn));
+		while($row=mysqli_fetch_row($father)){
 			if($row[0]!=null){
 echo<<<END
 
@@ -220,8 +220,8 @@ END;
 		$query="SELECT p.CodAuto, p.PrefixNome
 				FROM Package p
 				ORDER BY p.PrefixNome"; //Query che calcola i requisiti disponibili
-		$related=mysql_query($query,$conn) or fail("Query fallita: ".mysql_error($conn));
-		while($row=mysql_fetch_row($related)){
+		$related=  $conn->query($query) or die("Query fallita: ".mysqli_error($conn));
+		while($row=mysqli_fetch_row($related)){
 			if($row[0]!=null){
 echo<<<END
 
@@ -245,9 +245,9 @@ END;
 		$query="SELECT r.CodAuto, r.IdRequisito
 				FROM _MapRequisiti h JOIN Requisiti r ON h.CodAuto=r.CodAuto
 				ORDER BY h.Position"; //Query che calcola i requisiti disponibili
-		//$ord=mysql_query($query_ord,$conn) or fail("Query fallita: ".mysql_error($conn));
-		$requi=mysql_query($query,$conn) or fail("Query fallita: ".mysql_error($conn));
-		while($row=mysql_fetch_row($requi)){
+		//$ord=mysqli_query($query_ord,$conn) or die("Query fallita: ".mysqli_error($conn));
+		$requi=  $conn->query($query) or die("Query fallita: ".mysqli_error($conn));
+		while($row=mysqli_fetch_row($requi)){
 			if($row[0]!=null){
 echo<<<END
 

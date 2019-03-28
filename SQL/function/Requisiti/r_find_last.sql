@@ -23,7 +23,7 @@ DELIMITER $
     ANCHE SE I FRATELLI nel livello interessato NON SONO CONTIGUI, altrimenti NULL
 */
 DROP FUNCTION IF EXISTS findLastSibling $
-CREATE FUNCTION findLastSibling ( IdRequisito VARCHAR(20)) RETURNS VARCHAR(20)
+CREATE FUNCTION findLastSibling ( IdRequisito VARCHAR(20)) RETURNS VARCHAR(20) DETERMINISTIC
 BEGIN
     DECLARE hierarchyId VARCHAR(20);
     DECLARE postfixId INT(5);
@@ -71,7 +71,7 @@ END$
     t.c. LastRoot è sempre l'ultima radice dx, altrimenti NULL
 */
 DROP FUNCTION IF EXISTS findLastRoot $
-CREATE FUNCTION findLastRoot ( Tipo VARCHAR(13)) RETURNS VARCHAR(20)
+CREATE FUNCTION findLastRoot ( Tipo VARCHAR(13)) RETURNS VARCHAR(20) DETERMINISTIC
 BEGIN
     DECLARE done INT(1) DEFAULT 0;
     DECLARE LastRoot VARCHAR(20) DEFAULT NULL;

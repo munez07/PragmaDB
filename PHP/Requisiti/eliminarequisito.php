@@ -1,6 +1,6 @@
 <?php
 
-require('../Functions/mysql_fun.php');
+require('../Functions/mysqli_fun.php');
 require('../Functions/page_builder.php');
 require('../Functions/urlLab.php');
 
@@ -22,8 +22,8 @@ else{
 		$timestamp_query="SELECT r.Time
 						  FROM ReqTracking r
 						  WHERE r.CodAuto='$id' AND r.IdTrack=findLastReqTracking('$id')";
-		$timestamp_query=mysql_query($timestamp_query,$conn) or fail("Query fallita: ".mysql_error($conn));
-		if($row=mysql_fetch_row($timestamp_query)){
+		$timestamp_query=$conn->query($timestamp_query) or die("Query fallita: ".mysqli_error($conn));
+		if($row=mysqli_fetch_row($timestamp_query)){
 			$timestamp_db=$row[0];
 			$timestamp_db=strtotime($timestamp_db);
 			if($timestampf<$timestamp_db){
@@ -39,7 +39,7 @@ END;
 			}
 			else{
 				$query="CALL removeRequisito('$id')";
-				$query=mysql_query($query,$conn) or fail("Query fallita: ".mysql_error($conn));
+				$query=  $conn->query($query) or die("Query fallita: ".mysqli_error($conn));
 				$title="Requisito Eliminato";
 				startpage_builder($title);
 echo<<<END
@@ -67,14 +67,14 @@ END;
 	}
 	else{
 		$id=$_GET['id'];
-		$id=mysql_escape_string($id);
 		$conn=sql_conn();
+		$id=$conn->real_escape_string($id);
 		$query="SELECT r1.CodAuto,r1.IdRequisito,r1.Descrizione,r1.Tipo,r1.Importanza,r1.Padre,r1.Stato,r1.Soddisfatto,r1.Implementato,r1.Fonte,r2.IdRequisito,f.Nome
 				FROM (Requisiti r1 LEFT JOIN Requisiti r2 ON r1.Padre=r2.CodAuto) JOIN Fonti f ON r1.Fonte=f.CodAuto
 				WHERE r1.CodAuto='$id'";
-		$req=mysql_query($query,$conn) or fail("Query fallita: ".mysql_error($conn));
+		$req=  $conn->query($query) or die("Query fallita: ".mysqli_error($conn));
 		$timestamp=time();
-		$row=mysql_fetch_row($req);
+		$row=mysqli_fetch_row($req);
 		if($row[0]==$id){
 			$title="Elimina Requisito - $row[1]";
 			startpage_builder($title);

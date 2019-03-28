@@ -1,6 +1,6 @@
 <?php
 
-require('../Functions/mysql_fun.php');
+require('../Functions/mysqli_fun.php');
 require('../Functions/page_builder.php');
 require('../Functions/urlLab.php');
 
@@ -18,8 +18,8 @@ else{
 			FROM (_MapUseCase h JOIN UseCase u1 ON h.CodAuto=u1.CodAuto) LEFT JOIN UseCase u2 ON u1.Padre=u2.CodAuto
 			WHERE u1.CodAuto NOT IN (SELECT ruc.UC FROM RequisitiUC ruc)
 			ORDER BY h.Position";
-	//$ord=mysql_query($query_ord,$conn) or fail("Query fallita: ".mysql_error($conn));
-	$uc=mysql_query($query,$conn) or fail("Query fallita: ".mysql_error($conn));
+	//$ord=mysqli_query($query_ord,$conn) or die("Query fallita: ".mysqli_error($conn));
+	$uc=  $conn->query($query) or die("Query fallita: ".mysqli_error($conn));
 	$title="Use Case Solitari";
 	startpage_builder($title);
 echo<<<END
@@ -45,7 +45,7 @@ echo<<<END
 					</thead>
 					<tbody>
 END;
-	while($row=mysql_fetch_row($uc)){
+	while($row=mysqli_fetch_row($uc)){
 echo<<<END
 
 						<tr>

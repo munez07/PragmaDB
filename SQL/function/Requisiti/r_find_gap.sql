@@ -18,7 +18,7 @@ DELIMITER $
 /*DA USARE SOLO QUANDO SPOSTO SOTTOALBERI--->solo per rearrangeTree()*/
 /*ritorna sempre la prima posizione libera che trova,ATTENZIONE:ritorna un id anche se la posizione non esiste*/
 DROP FUNCTION IF EXISTS findSiblingGap $
-CREATE FUNCTION findSiblingGap ( Padre INT(5), Importanza ENUM('Obbligatorio','Desiderabile','Facoltativo')) RETURNS VARCHAR(20)
+CREATE FUNCTION findSiblingGap ( Padre INT(5), Importanza ENUM('Obbligatorio','Desiderabile','Facoltativo')) RETURNS VARCHAR(20) DETERMINISTIC
 BEGIN
     DECLARE done INT(1) DEFAULT 0;
     DECLARE gap VARCHAR(20) DEFAULT NULL;
@@ -51,7 +51,7 @@ END $
 
 /*trova il primo gap per la radice con Tipo e Importanza*/
 DROP FUNCTION IF EXISTS findRootGap $
-CREATE FUNCTION findRootGap ( Tipo ENUM('Funzionale','Vincolo','Qualita','Prestazionale'),Importanza ENUM('Obbligatorio','Desiderabile','Facoltativo')) RETURNS VARCHAR(20)
+CREATE FUNCTION findRootGap ( Tipo ENUM('Funzionale','Vincolo','Qualita','Prestazionale'),Importanza ENUM('Obbligatorio','Desiderabile','Facoltativo')) RETURNS VARCHAR(20) DETERMINISTIC
 BEGIN
     DECLARE done INT(1) DEFAULT 0;
     DECLARE gap VARCHAR(20) DEFAULT NULL;

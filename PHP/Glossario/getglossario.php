@@ -1,7 +1,7 @@
 <?php
 
 require('../Functions/get_tex.php');
-require('../Functions/mysql_fun.php');
+require('../Functions/mysqli_fun.php');
 require('../Functions/urlLab.php');
 
 session_start();

@@ -17,7 +17,7 @@ DELIMITER $
 
 DROP FUNCTION IF EXISTS existPadreRequisito $
 CREATE FUNCTION existPadreRequisito (Padre INT )
-    RETURNS TINYINT(1)
+    RETURNS TINYINT(1) DETERMINISTIC
 BEGIN
     DECLARE hasPadre TINYINT(1) DEFAULT 0;
     SELECT COUNT(*) FROM Requisiti WHERE CodAuto = Padre INTO hasPadre;
@@ -26,7 +26,7 @@ END $
 
 DROP FUNCTION IF EXISTS legalParent $
 CREATE FUNCTION legalParent (CodAuto INT(5), Padre INT(5))
-    RETURNS TINYINT(1)
+    RETURNS TINYINT(1) DETERMINISTIC
 BEGIN
     RETURN  (SELECT r.Tipo = q.Tipo FROM Requisiti r, Requisiti q WHERE r.CodAuto = CodAuto AND q.CodAuto = Padre LIMIT 1 );/*ritorna 0,1*/
 END $

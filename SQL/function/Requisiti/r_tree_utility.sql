@@ -16,7 +16,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 DELIMITER $
 
 DROP FUNCTION IF EXISTS hierarchyId $
-CREATE FUNCTION hierarchyId (id VARCHAR(20) ) RETURNS VARCHAR(20)
+CREATE FUNCTION hierarchyId (id VARCHAR(20) ) RETURNS VARCHAR(20) DETERMINISTIC
 BEGIN
     IF LOCATE('.',id) >0
         THEN
@@ -28,7 +28,7 @@ END $
 
 /*ritorna sempre una stringa che corrisponde al prefisso dell'IdRequisito (cioè tutto l'id escluso l'ultimo "." e il numero che si trova dopo esso)*/
 DROP FUNCTION IF EXISTS prefixId $
-CREATE FUNCTION prefixId (id VARCHAR(20) ) RETURNS VARCHAR(20)
+CREATE FUNCTION prefixId (id VARCHAR(20) ) RETURNS VARCHAR(20) DETERMINISTIC
 BEGIN
     IF LOCATE('.',id) >0
         THEN
@@ -48,7 +48,7 @@ END $
 
 /*ritorna sempre un numero che corrisponde al numero postfisso dell'IdRequisito*/
 DROP FUNCTION IF EXISTS postfixId $
-CREATE FUNCTION postfixId (id VARCHAR(20) ) RETURNS INT(5)
+CREATE FUNCTION postfixId (id VARCHAR(20) ) RETURNS INT(5) DETERMINISTIC
 BEGIN
     DECLARE postfixInt INT(5);
     IF (SELECT LOCATE('.',id)) > 0
@@ -76,7 +76,7 @@ END $
     altrimenti restituisce un indice = 0 che non indica nessuna posizione in una stringa
 */
 DROP FUNCTION IF EXISTS locateFirstInt $
-CREATE FUNCTION locateFirstInt (id VARCHAR(20) ) RETURNS INT(3)
+CREATE FUNCTION locateFirstInt (id VARCHAR(20) ) RETURNS INT(3) DETERMINISTIC
 BEGIN
     DECLARE position INT(3) DEFAULT 0;
     DECLARE ind INT(3) DEFAULT 1;
@@ -89,7 +89,7 @@ END $
 
 /*ritorna il numero di occorrenze di element in idString*/
 DROP FUNCTION IF EXISTS occurrencesInString $
-CREATE FUNCTION occurrencesInString (idString VARCHAR(20), element VARCHAR(5) ) RETURNS INT(2)
+CREATE FUNCTION occurrencesInString (idString VARCHAR(20), element VARCHAR(5) ) RETURNS INT(2) DETERMINISTIC
 BEGIN
     RETURN 
         (SELECT ROUND(((SELECT LENGTH(idString)) - (SELECT LENGTH( (SELECT REPLACE ( idString, element, "")) ))) / (SELECT LENGTH(element))));
@@ -102,7 +102,7 @@ chiamata solo in caso di necessità di costruire un requisito da zero
 -> crea un IdRequisito nel senso che questo Tipo di requisito non era 
 precedentemente presente nel DB*/
 DROP FUNCTION IF EXISTS generateIdRequisito $
-CREATE FUNCTION generateIdRequisito ( Tipo VARCHAR(13), Importanza VARCHAR(12)) RETURNS VARCHAR(20)
+CREATE FUNCTION generateIdRequisito ( Tipo VARCHAR(13), Importanza VARCHAR(12)) RETURNS VARCHAR(20) DETERMINISTIC
 BEGIN
     DECLARE Id VARCHAR(20);
     SELECT CONCAT('R',(SELECT LEFT(Tipo,1)),(SELECT LEFT(Importanza,1)),'1') INTO Id;
@@ -110,7 +110,7 @@ BEGIN
 END $
 
 DROP FUNCTION IF EXISTS r_legalKinship $
-CREATE FUNCTION r_legalKinship(IdReq VARCHAR(20), newPadre VARCHAR(20)) RETURNS TINYINT
+CREATE FUNCTION r_legalKinship(IdReq VARCHAR(20), newPadre VARCHAR(20)) RETURNS TINYINT DETERMINISTIC
 BEGIN
     RETURN NOT (IdReq = LEFT(newPadre,LENGTH(IdReq)));
 END $

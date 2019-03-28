@@ -1,6 +1,6 @@
 <?php
 
-require('../Functions/mysql_fun.php');
+require('../Functions/mysqli_fun.php');
 require('../Functions/page_builder.php');
 require('../Functions/urlLab.php'); 
 
@@ -49,8 +49,8 @@ else{
 					$query="SELECT COUNT(*)
 							FROM Test t
 							WHERE t.tipo='$tipof' AND t.Requisito='$requi1f'";
-					$ris=mysql_query($query,$conn) or fail("Query fallita: ".mysql_error($conn));
-					$row=mysql_fetch_row($ris);
+					$ris=  $conn->query($query) or die("Query fallita: ".mysqli_error($conn));
+					$row=mysqli_fetch_row($ris);
 					if($row[0]>0){
 						$err_requi_doppio=true;
 						$errori++;
@@ -66,8 +66,8 @@ else{
 					$query="SELECT COUNT(*)
 							FROM Test t
 							WHERE t.tipo='$tipof' AND t.Requisito='$requi2f'";
-					$ris=mysql_query($query,$conn) or fail("Query fallita: ".mysql_error($conn));
-					$row=mysql_fetch_row($ris);
+					$ris=  $conn->query($query) or die("Query fallita: ".mysqli_error($conn));
+					$row=mysqli_fetch_row($ris);
 					if($row[0]>0){
 						$err_requi_doppio=true;
 						$errori++;
@@ -83,8 +83,8 @@ else{
 					$query="SELECT COUNT(*)
 							FROM Test t
 							WHERE t.Package='$pkgf'";
-					$ris=mysql_query($query,$conn) or fail("Query fallita: ".mysql_error($conn));
-					$row=mysql_fetch_row($ris);
+					$ris=  $conn->query($query) or die("Query fallita: ".mysqli_error($conn));
+					$row=mysqli_fetch_row($ris);
 					if($row[0]>0){
 						$err_pkg_doppio=true;
 						$errori++;
@@ -159,7 +159,8 @@ echo<<<END
 END;
 		}
 		else{
-			$descf=mysql_escape_string($descf);
+			$conn = sql_conn();
+			$descf=$conn->real_escape_string($descf);
 			//Parsa i metodi correlati
 			for($i=1;$i<=$num_metf;$i++){
 				$temp=$_POST["met$i"];
@@ -181,22 +182,22 @@ END;
 			else{
 				$query1=$query1."'$pkgf')";
 			}
-			$query1=mysql_query($query1,$conn) or fail("Query fallita: Inserimento Test Fallito - ".mysql_error($conn));
+			$query1=$conn->query($query1) or die("Query fallita: Inserimento Test Fallito - ".mysqli_error($conn));
 			if($num_metf>0){
 				$queryCod="SELECT t.CodAuto
 						   FROM Test t
 						   WHERE t.Tipo='$tipof' AND t.Descrizione='$descf'
 						   ORDER BY t.Time DESC";
-				$queryCod=mysql_query($queryCod,$conn) or fail("Query fallita: Test non trovato nel DB - ".mysql_error($conn));
-				$row=mysql_fetch_row($queryCod);
+				$queryCod=$conn->query($queryCod) or die("Query fallita: Test non trovato nel DB - ".mysqli_error($conn));
+				$row=mysqli_fetch_row($queryCod);
 				if($row[0]!=null){
 					$cod=$row[0];
 				}
 				else{
-					fail("Query fallita: Test non trovato nel DB");
+					die("Query fallita: Test non trovato nel DB");
 				}
 				$query2="CALL insertTestMetodi('$cod','$metf')";
-				$query2=mysql_query($query2,$conn) or fail("Query fallita: Inserimento Metodi Correlati Fallito - ".mysql_error($conn));
+				$query2=$conn->query($query2) or die("Query fallita: Inserimento Metodi Correlati Fallito - ".mysqli_error($conn));
 			}
 			$title="Test Inserito";
 			startpage_builder($title);
@@ -261,9 +262,9 @@ END;
 				FROM _MapRequisiti h JOIN Requisiti r ON h.CodAuto=r.CodAuto
 				WHERE r.CodAuto NOT IN (SELECT t.Requisito FROM Test t WHERE t.Tipo='Validazione' AND t.Requisito IS NOT NULL)
 				ORDER BY h.Position"; //Query che calcola i requisiti disponibili
-		//$ord=mysql_query($query_ord,$conn) or fail("Query fallita: ".mysql_error($conn));
-		$requi=mysql_query($query,$conn) or fail("Query fallita: ".mysql_error($conn));
-		while($row=mysql_fetch_row($requi)){
+		//$ord=mysqli_query($query_ord,$conn) or die("Query fallita: ".mysqli_error($conn));
+		$requi=  $conn->query($query) or die("Query fallita: ".mysqli_error($conn));
+		while($row=mysqli_fetch_row($requi)){
 			if($row[0]!=null){
 echo<<<END
 
@@ -286,9 +287,9 @@ END;
 				FROM _MapRequisiti h JOIN Requisiti r ON h.CodAuto=r.CodAuto
 				WHERE r.CodAuto NOT IN (SELECT t.Requisito FROM Test t WHERE t.Tipo='Sistema' AND t.Requisito IS NOT NULL)
 				ORDER BY h.Position"; //Query che calcola i requisiti disponibili
-		//$ord=mysql_query($query_ord,$conn) or fail("Query fallita: ".mysql_error($conn));
-		$requi=mysql_query($query,$conn) or fail("Query fallita: ".mysql_error($conn));
-		while($row=mysql_fetch_row($requi)){
+		//$ord=mysqli_query($query_ord,$conn) or die("Query fallita: ".mysqli_error($conn));
+		$requi=  $conn->query($query) or die("Query fallita: ".mysqli_error($conn));
+		while($row=mysqli_fetch_row($requi)){
 			if($row[0]!=null){
 echo<<<END
 
@@ -309,8 +310,8 @@ END;
 				FROM Package p
 				WHERE p.CodAuto NOT IN (SELECT t.Package FROM Test t WHERE t.Package IS NOT NULL)
 				ORDER BY p.PrefixNome"; //Query che calcola i package disponibili
-		$pack=mysql_query($query,$conn) or fail("Query fallita: ".mysql_error($conn));
-		while($row=mysql_fetch_row($pack)){
+		$pack=  $conn->query($query) or die("Query fallita: ".mysqli_error($conn));
+		while($row=mysqli_fetch_row($pack)){
 			if($row[0]!=null){
 echo<<<END
 
@@ -332,23 +333,23 @@ END;
 		$query="SELECT m.CodAuto, CONCAT(c.PrefixNome,'::',m.Nome), m.ReturnType
 				FROM Metodo m JOIN Classe c ON m.Classe=c.CodAuto
 				ORDER BY CONCAT(c.PrefixNome,'::',m.Nome)"; //Query che calcola i requisiti disponibili
-		$met=mysql_query($query,$conn) or fail("Query fallita: ".mysql_error($conn));
-		while($row=mysql_fetch_row($met)){
+		$met=  $conn->query($query) or die("Query fallita: ".mysqli_error($conn));
+		while($row=mysqli_fetch_row($met)){
 			if($row[0]!=null){
 				$query_par="SELECT p.Nome, p.Tipo
 							FROM Parametro p
 							WHERE p.Metodo='$row[0]'";
-				$par=mysql_query($query_par,$conn) or fail("Query fallita: ".mysql_error($conn));
+				$par=$conn->query($query_par) or die("Query fallita: ".mysqli_error($conn));
 echo<<<END
 
 									<option value="$row[0]">$row[1](
 END;
-				if($riga=mysql_fetch_row($par)){
+				if($riga=mysqli_fetch_row($par)){
 echo<<<END
 $riga[0]: $riga[1]
 END;
 				}
-				while($riga=mysql_fetch_row($par)){
+				while($riga=mysqli_fetch_row($par)){
 echo<<<END
 , $riga[0]: $riga[1]
 END;
@@ -376,24 +377,24 @@ END;
 		$query="SELECT m.CodAuto, CONCAT(c.PrefixNome,'::',m.Nome), m.ReturnType
 				FROM Metodo m JOIN Classe c ON m.Classe=c.CodAuto
 				ORDER BY CONCAT(c.PrefixNome,'::',m.Nome)"; //Query che calcola i requisiti disponibili
-		//$ord=mysql_query($query_ord,$conn) or fail("Query fallita: ".mysql_error($conn));
-		$met=mysql_query($query,$conn) or fail("Query fallita: ".mysql_error($conn));
-		while($row=mysql_fetch_row($met)){
+		//$ord=mysqli_query($query_ord,$conn) or die("Query fallita: ".mysqli_error($conn));
+		$met=  $conn->query($query) or die("Query fallita: ".mysqli_error($conn));
+		while($row=mysqli_fetch_row($met)){
 			if($row[0]!=null){
 				$query_par="SELECT p.Nome, p.Tipo
 							FROM Parametro p
 							WHERE p.Metodo='$row[0]'";
-				$par=mysql_query($query_par,$conn) or fail("Query fallita: ".mysql_error($conn));
+				$par=$conn->query($query_par) or die("Query fallita: ".mysqli_error($conn));
 echo<<<END
 
 									<option value="$row[0]">$row[1](
 END;
-				if($riga=mysql_fetch_row($par)){
+				if($riga=mysqli_fetch_row($par)){
 echo<<<END
 $riga[0]: $riga[1]
 END;
 				}
-				while($riga=mysql_fetch_row($par)){
+				while($riga=mysqli_fetch_row($par)){
 echo<<<END
 , $riga[0]: $riga[1]
 END;

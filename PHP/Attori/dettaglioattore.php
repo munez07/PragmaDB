@@ -1,6 +1,6 @@
 <?php
 
-require('../Functions/mysql_fun.php');
+require('../Functions/mysqli_fun.php');
 require('../Functions/page_builder.php');
 require('../Functions/urlLab.php');
 
@@ -13,13 +13,13 @@ if(empty($_SESSION['user'])){
 }
 else{
 	$id=$_GET['id'];
-	$id=mysql_escape_string($id);
 	$conn=sql_conn();
+	$id = $conn->real_escape_string($id);
 	$query="SELECT a.CodAuto, a.Nome, a.Descrizione, a.Time
 			FROM Attori a
 			WHERE a.CodAuto='$id'";
-	$att=mysql_query($query,$conn) or fail("Query fallita: ".mysql_error($conn));
-	$row=mysql_fetch_row($att);
+	$att=  $conn->query($query) or die("Query fallita: ".mysqli_error($conn));
+	$row=mysqli_fetch_row($att);
 	if($row[0]==$id){
 		$title="Dettaglio Attore - $row[1]";
 		startpage_builder($title);
@@ -49,9 +49,9 @@ END;
 				FROM AttoriUC auc JOIN (_MapUseCase h JOIN UseCase u ON h.CodAuto=u.CodAuto) ON auc.UC=u.CodAuto
 				WHERE auc.Attore='$id'
 				ORDER BY h.Position";
-		//$ord=mysql_query($query_ord,$conn) or fail("Query fallita: ".mysql_error($conn));
-		$uc=mysql_query($query,$conn) or fail("Query fallita: ".mysql_error($conn));
-		$row = mysql_fetch_row($uc);
+		//$ord=mysqli_query($query_ord,$conn) or die("Query fallita: ".mysqli_error($conn));
+		$uc=  $conn->query($query) or die("Query fallita: ".mysqli_error($conn));
+		$row = mysqli_fetch_row($uc);
 		if($row[0]!=null){
 echo<<<END
 
@@ -59,7 +59,7 @@ echo<<<END
 					<dd><a class="link-color-pers" href="$absurl/UseCase/dettagliousecase.php?id=$row[0]">$row[1] - $row[2]</a></dd>
 END;
 		}
-		while($row = mysql_fetch_row($uc)){
+		while($row = mysqli_fetch_row($uc)){
 echo<<<END
 
 					<dd><a class="link-color-pers" href="$absurl/UseCase/dettagliousecase.php?id=$row[0]">$row[1] - $row[2]</a></dd>

@@ -1,6 +1,6 @@
 <?php
 
-require('../Functions/mysql_fun.php');
+require('../Functions/mysqli_fun.php');
 require('../Functions/page_builder.php');
 require('../Functions/urlLab.php'); 
 
@@ -48,8 +48,8 @@ else{
 			$query="SELECT p.RelationType,p.PrefixNome
 					FROM Package p
 					WHERE p.CodAuto='$padref'";
-			$ris=mysql_query($query,$conn) or fail("Query fallita: ".mysql_error($conn));
-			$row=mysql_fetch_row($ris);
+			$ris=  $conn->query($query) or die("Query fallita: ".mysqli_error($conn));
+			$row=mysqli_fetch_row($ris);
 			if($row[0]==null){
 				$err_contenitore_padre=true;
 				$errori++;
@@ -128,11 +128,11 @@ END;
 				$temp=$_POST["requi$i"];
 				$requif="$requif"."$temp".",";
 			}
-			$nomef=mysql_escape_string($nomef);
-			$descf=mysql_escape_string($descf);
-			$utilf=mysql_escape_string($utilf);
-			$diagf=mysql_escape_string($diagf);
 			$conn=sql_conn();
+			$nomef = $conn->real_escape_string($nomef);
+			$descf = $conn->real_escape_string($descf);
+			$utilf = $conn->real_escape_string($utilf);
+			$diagf = $conn->real_escape_string($diagf);
 			$query1="CALL insertClasse('$nomef','$descf','$prefixPadre"."$nomef',";
 			if($utilf==null){
 				$query1=$query1."null,";
@@ -147,37 +147,37 @@ END;
 			else{
 				$query1=$query1."'$diagf')";
 			}
-			$query1=mysql_query($query1,$conn) or fail("Query fallita: Inserimento Classe Fallito - ".mysql_error($conn));
+			$query1=$conn->query($query1) or die("Query fallita: Inserimento Classe Fallito - ".mysqli_error($conn));
 			$queryCod="SELECT c.CodAuto
 						FROM Classe c
 						WHERE c.PrefixNome='$prefixPadre"."$nomef'";
-			$queryCod=mysql_query($queryCod,$conn) or fail("Query fallita: Classe non trovata nel DB - ".mysql_error($conn));
-			$row=mysql_fetch_row($queryCod);
+			$queryCod=$conn->query($queryCod) or die("Query fallita: Classe non trovata nel DB - ".mysqli_error($conn));
+			$row=mysqli_fetch_row($queryCod);
 			if($row[0]!=null){
 				$cod=$row[0];
 			}
 			else{
-				fail("Query fallita: Classe non trovata nel DB");
+				die("Query fallita: Classe non trovata nel DB");
 			}
 			if($num_cluf>0){
 				$query2="CALL insertEreditaDa('$cod','$cluf')";
-				$query2=mysql_query($query2,$conn) or fail("Query fallita: Inserimento Eredita Da Fallito - ".mysql_error($conn));
+				$query2=$conn->query($query2) or die("Query fallita: Inserimento Eredita Da Fallito - ".mysqli_error($conn));
 			}
 			if($num_cldf>0){
 				$query3="CALL insertEreditataDa('$cod','$cldf')";
-				$query3=mysql_query($query3,$conn) or fail("Query fallita: Inserimento Ereditano Da Lei Fallito - ".mysql_error($conn));
+				$query3=$conn->query($query3) or die("Query fallita: Inserimento Ereditano Da Lei Fallito - ".mysqli_error($conn));
 			}
 			if($num_cltf>0){
 				$query4="CALL insertRelazioneA('$cod','$cltf')";
-				$query4=mysql_query($query4,$conn) or fail("Query fallita: Inserimento IN Fallito - ".mysql_error($conn));
+				$query4=$conn->query($query4) or die("Query fallita: Inserimento IN Fallito - ".mysqli_error($conn));
 			}
 			if($num_clqf>0){
 				$query5="CALL insertRelazioneDa('$cod','$clqf')";
-				$query5=mysql_query($query5,$conn) or fail("Query fallita: Inserimento OUT Fallito - ".mysql_error($conn));
+				$query5=$conn->query($query5) or die("Query fallita: Inserimento OUT Fallito - ".mysqli_error($conn));
 			}
 			if($num_requif>0){
 				$query6="CALL insertClasseRequisiti('$cod','$requif')";
-				$query6=mysql_query($query6,$conn) or fail("Query fallita: Inserimento Requisiti Correlati Fallito - ".mysql_error($conn));
+				$query6=$conn->query($query6) or die("Query fallita: Inserimento Requisiti Correlati Fallito - ".mysqli_error($conn));
 			}
 			$title="Classe Inserita";
 			startpage_builder($title);
@@ -225,8 +225,8 @@ END;
 				FROM Package p
 				ORDER BY p.PrefixNome"; //Query per recuperare l'id di tutti i package
 					//in modo che $row[0] sia l'id e che $row[1] sia il [prefisso::]nome 
-		$father=mysql_query($query,$conn) or fail("Query fallita: ".mysql_error($conn));
-		while($row=mysql_fetch_row($father)){
+		$father=  $conn->query($query) or die("Query fallita: ".mysqli_error($conn));
+		while($row=mysqli_fetch_row($father)){
 			if($row[0]!=null){
 echo<<<END
 
@@ -253,8 +253,8 @@ END;
 		$query="SELECT c.CodAuto, c.PrefixNome
 				FROM Classe c
 				ORDER BY c.PrefixNome"; //Query che calcola le classi disponibili
-		$in=mysql_query($query,$conn) or fail("Query fallita: ".mysql_error($conn));
-		while($row=mysql_fetch_row($in)){
+		$in=  $conn->query($query) or die("Query fallita: ".mysqli_error($conn));
+		while($row=mysqli_fetch_row($in)){
 			if($row[0]!=null){
 echo<<<END
 
@@ -276,8 +276,8 @@ END;
 		$query="SELECT c.CodAuto, c.PrefixNome
 				FROM Classe c
 				ORDER BY c.PrefixNome"; //Query che calcola le classi disponibili
-		$out=mysql_query($query,$conn) or fail("Query fallita: ".mysql_error($conn));
-		while($row=mysql_fetch_row($out)){
+		$out=  $conn->query($query) or die("Query fallita: ".mysqli_error($conn));
+		while($row=mysqli_fetch_row($out)){
 			if($row[0]!=null){
 echo<<<END
 
@@ -298,8 +298,8 @@ END;
 		$query="SELECT c.CodAuto, c.PrefixNome
 				FROM Classe c
 				ORDER BY c.PrefixNome"; //Query che calcola le classi disponibili
-		$in=mysql_query($query,$conn) or fail("Query fallita: ".mysql_error($conn));
-		while($row=mysql_fetch_row($in)){
+		$in=  $conn->query($query) or die("Query fallita: ".mysqli_error($conn));
+		while($row=mysqli_fetch_row($in)){
 			if($row[0]!=null){
 echo<<<END
 
@@ -321,8 +321,8 @@ END;
 		$query="SELECT c.CodAuto, c.PrefixNome
 				FROM Classe c
 				ORDER BY c.PrefixNome"; //Query che calcola le classi disponibili
-		$out=mysql_query($query,$conn) or fail("Query fallita: ".mysql_error($conn));
-		while($row=mysql_fetch_row($out)){
+		$out=  $conn->query($query) or die("Query fallita: ".mysqli_error($conn));
+		while($row=mysqli_fetch_row($out)){
 			if($row[0]!=null){
 echo<<<END
 
@@ -344,9 +344,9 @@ END;
 		$query="SELECT r.CodAuto, r.IdRequisito
 				FROM _MapRequisiti h JOIN Requisiti r ON h.CodAuto=r.CodAuto
 				ORDER BY h.Position"; //Query che calcola i requisiti disponibili
-		//$ord=mysql_query($query_ord,$conn) or fail("Query fallita: ".mysql_error($conn));
-		$requi=mysql_query($query,$conn) or fail("Query fallita: ".mysql_error($conn));
-		while($row=mysql_fetch_row($requi)){
+		//$ord=mysqli_query($query_ord,$conn) or die("Query fallita: ".mysqli_error($conn));
+		$requi=  $conn->query($query) or die("Query fallita: ".mysqli_error($conn));
+		while($row=mysqli_fetch_row($requi)){
 			if($row[0]!=null){
 echo<<<END
 

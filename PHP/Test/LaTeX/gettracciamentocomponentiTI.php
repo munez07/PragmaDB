@@ -1,6 +1,6 @@
 <?php
 
-require('../../Functions/mysql_fun.php');
+require('../../Functions/mysqli_fun.php');
 require('../../Functions/urlLab.php');
 
 session_start();
@@ -21,7 +21,7 @@ else{
 				FROM Package p JOIN Test t ON p.CodAuto=t.Package
 				WHERE t.Tipo='Integrazione'
 				ORDER BY p.PrefixNome";
-	$pkg=mysql_query($query_pkg,$conn) or fail("Query fallita: ".mysql_error($conn));
+	$pkg=$conn->query($query_pkg) or die("Query fallita: ".mysqli_error($conn));
 echo<<<END
 \\subsection{Tracciamento Componenti-Test di Integrazione}
 \\normalsize
@@ -31,7 +31,7 @@ echo<<<END
 \\hline
 \\endhead
 END;
-	while($row_pkg=mysql_fetch_row($pkg)){
+	while($row_pkg=mysqli_fetch_row($pkg)){
 echo<<<END
 
 \\nogloxy{\\texttt{{$row_pkg[0]}}} & \\hyperlink{{$row_pkg[1]}}{{$row_pkg[1]}}\\\ \\hline

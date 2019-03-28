@@ -1,6 +1,6 @@
 <?php
 
-require('../Functions/mysql_fun.php');
+require('../Functions/mysqli_fun.php');
 require('../Functions/page_builder.php');
 require('../Functions/urlLab.php');
 
@@ -68,10 +68,10 @@ echo<<<END
 				</div>
 END;
 	$conn=sql_conn();
-	//$ord=mysql_query($query_ord,$conn) or fail("Query fallita: ".mysql_error($conn));
+	//$ord=mysqli_query($query_ord,$conn) or die("Query fallita: ".mysqli_error($conn));
 	foreach($queries as $ind => $query){
-		$test=mysql_query($query,$conn) or fail("Query fallita: ".mysql_error($conn));
-		if($row=mysql_fetch_row($test)){
+		$test=  $conn->query($query) or die("Query fallita: ".mysqli_error($conn));
+		if($row=mysqli_fetch_row($test)){
 echo<<<END
 
 				<h4 id="$abbr[$ind]" class="subtable-title">Test di $tipi[$ind]</h4>
@@ -101,7 +101,7 @@ echo<<<END
 							</td>
 						</tr>
 END;
-			while($row=mysql_fetch_row($test)){
+			while($row=mysqli_fetch_row($test)){
 echo<<<END
 
 						<tr>

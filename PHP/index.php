@@ -1,6 +1,6 @@
 <?php
 
-require('Functions/mysql_fun.php');
+require('Functions/mysqli_fun.php');
 require('Functions/page_builder.php');
 require('Functions/urlLab.php');
 
@@ -12,11 +12,13 @@ if(isset($_REQUEST['submit'])){
 	$user=$_POST["username"];
 	$pwd=$_POST["password"];
 	$db=get_info($user);
+	echo 'ciao3';
 	if(($user!=null) && ($pwd!=null) && (sha1($pwd) == $db[0])){
 		$_SESSION['user']=$user;
 		$_SESSION['nome']=$db[1];
 		$_SESSION['cognome']=$db[2];
 	}
+	echo 'ciao2';
 	header("Location: $absurl/Utente/home.php");
 }
 else{
@@ -34,7 +36,7 @@ echo<<<END
 					<fieldset>
 						<p>
 							<label for="username">Username:</label>
-							<input type="text" id="username" name="username" maxlength="4" />
+							<input type="text" id="username" name="username" maxlength="20" />
 						</p>
 						<p>
 							<label for="password">Password:</label>

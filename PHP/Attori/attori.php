@@ -1,6 +1,6 @@
 <?php
 
-require('../Functions/mysql_fun.php');
+require('../Functions/mysqli_fun.php');
 require('../Functions/page_builder.php');
 require('../Functions/urlLab.php');
 
@@ -16,7 +16,7 @@ else{
 	$query="SELECT a.CodAuto, a.Nome, a.Descrizione, a.Time
 			FROM Attori a
 			ORDER BY a.Nome";
-	$att=mysql_query($query,$conn) or fail("Query fallita: ".mysql_error($conn));
+	$att=  $conn->query($query) or die("Query fallita: ".mysqli_error($conn));
 	$title="Attori";
 	startpage_builder($title);
 echo<<<END
@@ -41,7 +41,7 @@ echo<<<END
 					</thead>
 					<tbody>
 END;
-	while($row=mysql_fetch_row($att)){
+	while($row=mysqli_fetch_row($att)){
 echo<<<END
 
 						<tr>

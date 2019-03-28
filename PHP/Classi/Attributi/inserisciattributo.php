@@ -1,6 +1,6 @@
 <?php
 
-require('../../Functions/mysql_fun.php');
+require('../../Functions/mysqli_fun.php');
 require('../../Functions/page_builder.php');
 require('../../Functions/urlLab.php'); 
 
@@ -44,17 +44,19 @@ else{
 			$errori++;
 		}
 		if(isset($accf)){
-			$accf=mysql_escape_string($accf);
+			$conn=sql_conn();
+			$accf = $conn->real_escape_string($accf);
 		}
-		$nomef=mysql_escape_string($nomef);
-		$tipof=mysql_escape_string($tipof);
-		$descf=mysql_escape_string($descf);
-		$conn=sql_conn();
+		if (!isset($conn) || $conn == null)
+			$conn=sql_conn();
+		$homef = $conn->real_escape_string($homef);
+		$tipof = $conn->real_escape_string($tipof);
+		$descf = $conn->real_escape_string($descf);
 		$query="SELECT a.CodAuto
 				FROM Attributo a
 				WHERE a.Nome='$nomef' AND a.Classe='$cl'";
-		$pres=mysql_query($query,$conn) or fail("Query fallita: ".mysql_error($conn));
-		$pres=mysql_fetch_row($pres);
+		$pres=  $conn->query($query) or die("Query fallita: ".mysqli_error($conn));
+		$pres=mysqli_fetch_row($pres);
 		if($pres[0]!=null){
 			$err_pres=true;
 			$errori++;
@@ -108,8 +110,8 @@ END;
 			$timestamp_query="SELECT c.Time
 							  FROM Classe c
 							  WHERE c.CodAuto='$cl'";
-			$timestamp_query=mysql_query($timestamp_query,$conn) or fail("Query fallita: ".mysql_error($conn));
-			if($row=mysql_fetch_row($timestamp_query)){
+			$timestamp_query=$conn->query($timestamp_query) or die("Query fallita: ".mysqli_error($conn));
+			if($row=mysqli_fetch_row($timestamp_query)){
 				$timestamp_db=$row[0];
 				$timestamp_db=strtotime($timestamp_db);
 				if($timestampf<$timestamp_db){
@@ -124,7 +126,7 @@ END;
 				}
 				else{
 					$query="CALL insertAttributo('$accf','$nomef','$tipof','$descf','$cl')";
-					$query=mysql_query($query,$conn) or fail("Query fallita: ".mysql_error($conn));
+					$query=  $conn->query($query) or die("Query fallita: ".mysqli_error($conn));
 					$title="Attributo Inserito";
 					startpage_builder($title);
 echo<<<END
@@ -151,14 +153,14 @@ END;
 	}
 	else{
 		$cl=$_GET['cl'];
-		$cl=mysql_escape_string($cl);
 		$conn=sql_conn();
+		$cl = $conn->real_escape_string($cl);
 		$query="SELECT c.CodAuto, c.PrefixNome
 				FROM Classe c
 				WHERE c.CodAuto='$cl'";
-		$classe=mysql_query($query,$conn) or fail("Query fallita: ".mysql_error($conn));
+		$classe=  $conn->query($query) or die("Query fallita: ".mysqli_error($conn));
 		$timestamp=time();
-		$row_cl=mysql_fetch_row($classe);
+		$row_cl=mysqli_fetch_row($classe);
 		if($row_cl[0]==$cl){
 			$title="$row_cl[1] - Inserisci Attributo";
 			startpage_builder($title);

@@ -1,6 +1,6 @@
 <?php
 
-require('../Functions/mysql_fun.php');
+require('../Functions/mysqli_fun.php');
 require('../Functions/page_builder.php');
 require('../Functions/urlLab.php');
 
@@ -44,12 +44,12 @@ END;
 			}
 			else{
 				$newp=sha1($newp);
-				$newp=mysql_escape_string($newp);
 				$conn=sql_conn();
+				$newp=$conn->real_escape_string($newp);
 				$query="UPDATE Utenti u
 						SET u.Password='$newp'
 						WHERE u.Username='$user'";
-				$query=mysql_query($query,$conn) or fail("Query fallita: ".mysql_error($conn));
+				$query=  $conn->query($query) or die("Query fallita: ".mysqli_error($conn));
 				$title="Password Modificata";
 				startpage_builder($title);
 echo<<<END

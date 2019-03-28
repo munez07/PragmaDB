@@ -291,13 +291,13 @@ END;
 						FROM Parametro p
 						WHERE p.Metodo=$row[0]
 						ORDER BY p.CodAuto";
-				$par=mysql_query($query,$conn) or fail("Query fallita: ".mysql_error($conn));
-				if($riga=mysql_fetch_row($par)){
+				$par=  $conn->query($query) or die("Query fallita: ".mysqli_error($conn));
+				if($riga=mysqli_fetch_row($par)){
 echo<<<END
 <a class="link-color-pers" href="$absurl/Classi/Metodi/Parametri/dettaglioparametro.php?id=$riga[0]">$riga[1]</a>: $riga[2]
 END;
 				}
-				while($riga=mysql_fetch_row($par)){
+				while($riga=mysqli_fetch_row($par)){
 echo<<<END
 , <a class="link-color-pers" href="$absurl/Classi/Metodi/Parametri/dettaglioparametro.php?id=$riga[0]">$riga[1]</a>: $riga[2]
 END;
@@ -377,13 +377,13 @@ END;
 						FROM Parametro p
 						WHERE p.Metodo=$row[0]
 						ORDER BY p.CodAuto";
-				$par=mysql_query($query,$conn) or fail("Query fallita: ".mysql_error($conn));
-				if($riga=mysql_fetch_row($par)){
+				$par=  $conn->query($query) or die("Query fallita: ".mysqli_error($conn));
+				if($riga=mysqli_fetch_row($par)){
 echo<<<END
 <a class="link-color-pers" href="$absurl/Classi/Metodi/Parametri/dettaglioparametro.php?id=$riga[0]">$riga[1]</a>: $riga[2]
 END;
 				}
-				while($riga=mysql_fetch_row($par)){
+				while($riga=mysqli_fetch_row($par)){
 echo<<<END
 , <a class="link-color-pers" href="$absurl/Classi/Metodi/Parametri/dettaglioparametro.php?id=$riga[0]">$riga[1]</a>: $riga[2]
 END;

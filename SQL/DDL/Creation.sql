@@ -18,7 +18,7 @@ DELIMITER ;
 USE pragmadb;
 
 CREATE TABLE Utenti(
-    Username        VARCHAR(4) PRIMARY KEY,
+    Username        VARCHAR(20) PRIMARY KEY,
     Nome            VARCHAR(12) NOT NULL,
     Cognome         VARCHAR(9) NOT NULL,
     Password        VARCHAR(40) NOT NULL
@@ -57,7 +57,7 @@ CREATE TABLE ReqTracking (
     Implementato    BOOL DEFAULT '0' NOT NULL,
     Fonte       INT(5) NOT NULL,
     CodAuto     INT(5) NOT NULL,
-    Utente      VARCHAR(4) NOT NULL,
+    Utente      VARCHAR(20) NOT NULL,
     Time        DATETIME,
     Soddisfatto    BOOL  DEFAULT  '0'  NOT NULL,
     FOREIGN KEY (CodAuto) REFERENCES Requisiti(CodAuto)
@@ -90,14 +90,14 @@ CREATE TABLE UseCase (
     IdUC   VARCHAR(20) UNIQUE NOT NULL,
     Nome  VARCHAR(50) UNIQUE NOT NULL,
     Diagramma   VARCHAR(50) UNIQUE DEFAULT NULL,
-    Descrizione VARCHAR(10000) NOT NULL,
-    Precondizioni       VARCHAR(10000) NOT NULL,
-    Postcondizioni VARCHAR(10000) NOT NULL,
+    Descrizione VARCHAR(1000) NOT NULL,
+    Precondizioni       VARCHAR(1000) NOT NULL,
+    Postcondizioni VARCHAR(1000) NOT NULL,
     Padre       INT(5) DEFAULT NULL,
-    ScenarioPrincipale      VARCHAR(10000) NOT NULL,
-    Inclusioni      VARCHAR(5000) DEFAULT NULL,
-    Estensioni      VARCHAR(5000) DEFAULT NULL,
-    ScenariAlternativi      VARCHAR(10000) DEFAULT NULL,
+    ScenarioPrincipale      VARCHAR(1000) NOT NULL,
+    Inclusioni      VARCHAR(1000) DEFAULT NULL,
+    Estensioni      VARCHAR(1000) DEFAULT NULL,
+    ScenariAlternativi      VARCHAR(1000) DEFAULT NULL,
     Time        DATETIME,
     FOREIGN KEY  (Padre)  REFERENCES  UseCase(CodAuto)  ON DELETE  CASCADE  ON UPDATE  CASCADE
 ) ENGINE=InnoDB;
@@ -142,9 +142,9 @@ CREATE TABLE RelatedPackage (
 CREATE TABLE Classe (
     CodAuto    INT(5) PRIMARY KEY AUTO_INCREMENT,
     Nome  VARCHAR(100) NOT NULL,
-    PrefixNome   VARCHAR(5000) NOT NULL,/*Prefisso+Nome*/
-    Descrizione VARCHAR(10000) NOT NULL,
-    Utilizzo VARCHAR(10000) DEFAULT NULL,
+    PrefixNome   VARCHAR(1000) NOT NULL,/*Prefisso+Nome*/
+    Descrizione VARCHAR(1000) NOT NULL,
+    Utilizzo VARCHAR(1000) DEFAULT NULL,
     ContenutaIn     INT(5) NOT NULL,
     UML   VARCHAR(50) UNIQUE DEFAULT NULL,
     Time        DATETIME,
@@ -187,7 +187,7 @@ CREATE TABLE Attributo (
 /*Il PrefixNome bisogna andare a prenderselo dalla classe che lo contiene*/
     Nome  VARCHAR(800) NOT NULL,
     ReturnType  VARCHAR(800) DEFAULT NULL,
-    Descrizione VARCHAR(10000) NOT NULL,
+    Descrizione VARCHAR(1000) NOT NULL,
     Classe  INT(5) NOT NULL,
     FOREIGN KEY (Classe) REFERENCES Classe(CodAuto)
             ON DELETE CASCADE

@@ -1,6 +1,6 @@
 <?php
 
-require('../Functions/mysql_fun.php');
+require('../Functions/mysqli_fun.php');
 require('../Functions/page_builder.php');
 require('../Functions/urlLab.php');
 
@@ -18,8 +18,8 @@ else{
 			FROM ((_MapRequisiti h JOIN Requisiti r1 ON h.CodAuto=r1.CodAuto) LEFT JOIN Requisiti r2 ON r1.Padre=r2.CodAuto) JOIN Fonti f ON r1.Fonte=f.CodAuto
 			WHERE r1.CodAuto NOT IN (SELECT ruc.CodReq FROM RequisitiUC ruc)
 			ORDER BY h.Position";
-	//$ord=mysql_query($query_ord,$conn) or fail("Query fallita: ".mysql_error($conn));
-	$req=mysql_query($query,$conn) or fail("Query fallita: ".mysql_error($conn));
+	//$ord=mysqli_query($query_ord,$conn) or die("Query fallita: ".mysqli_error($conn));
+	$req=  $conn->query($query) or die("Query fallita: ".mysqli_error($conn));
 	$title="Requisiti Solitari";
 	startpage_builder($title);
 echo<<<END
@@ -43,7 +43,7 @@ echo<<<END
 					</thead>
 					<tbody>
 END;
-	while($row=mysql_fetch_row($req)){
+	while($row=mysqli_fetch_row($req)){
 echo<<<END
 
 						<tr>

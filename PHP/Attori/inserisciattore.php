@@ -1,6 +1,6 @@
 <?php
 
-require('../Functions/mysql_fun.php');
+require('../Functions/mysqli_fun.php');
 require('../Functions/page_builder.php');
 require('../Functions/urlLab.php');
 
@@ -33,11 +33,11 @@ echo<<<END
 END;
 		}
 		else{
-			$nomef=mysql_escape_string($nomef);
-			$descf=mysql_escape_string($descf);
 			$conn=sql_conn();
+			$nomef=$conn->real_escape_string($nomef);
+			$descf=$conn->real_escape_string($descf);
 			$query="CALL insertAttore('$nomef','$descf');";
-			$query=mysql_query($query,$conn) or fail("Query fallita: ".mysql_error($conn));
+			$query=  $conn->query($query) or die("Query fallita: ".mysqli_error($conn));
 			$title="Attore Inserito";
 			startpage_builder($title);
 echo<<<END

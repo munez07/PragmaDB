@@ -8,12 +8,11 @@ function sql_conn_testDB(){
 	$host="INSERIRE_NOME_HOST";
 	$user="INSERIRE_NOME_UTENTE_DB";
 	$pwd="INSERIRE_PASSWD_DB";
-	$dbname="INSERIRE_NOME_DB";
-	$conn=mysql_connect($host,$user,$pwd)
+	$dbname="pragmadb";
+	$conn=mysqli_connect($host,$user,$pwd, $dbname)
 			or die($_SERVER['PHP_SELF'] . ": Connessione Fallita!<br />");
-	mysql_select_db($dbname);
 	$query="SET @@session.max_sp_recursion_depth = 255";
-    $query=mysql_query($query,$conn) or die($_SERVER['PHP_SELF'] ."Query fallita: ".mysql_error($conn));
+    $query=  $conn->query($query) or die($_SERVER['PHP_SELF'] ."Query fallita: ".mysqli_error($conn));
 	return $conn;
 }
 
@@ -48,16 +47,17 @@ END;
 				$reqRecord[0]= "smun";
 				$recordIndex= 1;
 
+				$conn = sql_conn_testDB();
 				while($record !==false)
 				{
 					$token= trim(preg_replace('/\s+/', ' ', $token));
-					$escape= mysql_escape_string($token);
+					$escape=$conn->real_escape_string($token);
 					$reqRecord[$recordIndex]= $escape;
 					$token= strtok($record,$splitValue);
 					$record= substr($record,strlen($token."**"));//Funzionale**
 					$recordIndex= $recordIndex+1;
 				}
-				$escape= mysql_escape_string($token);
+				$escape=$conn->real_escape_string($token);
 				$reqRecord[$recordIndex]= $escape;
 			}
 			if(count($reqRecord) == 9)
@@ -89,8 +89,8 @@ END;
 				{
 					$padre= $reqPage[$pageIndex][4];
 					$query= "SELECT r.CodAuto FROM Requisiti r WHERE r.IdRequisito= '$padre'";
-					$ris= mysql_query($query,$conn) or die("Query fallita: ".mysql_error($conn));
-					$row=mysql_fetch_row($ris);
+					$ris=   $conn->query($query) or die("Query fallita: ".mysqli_error($conn));
+					$row=mysqli_fetch_row($ris);
 					$reqPage[$pageIndex][4]= $row[0];
 				}
 				$reqPage[$pageIndex][7]= substr($reqPage[$pageIndex][7],1);
@@ -109,7 +109,7 @@ END;
 				else
 					$query= "CALL insertRequisito('$var0','$var1','$var2','$var3','$var4',$var5,$var6,$var7,'')";
 				echo $query;
-				mysql_query($query,$conn) or die("Query fallita: ".mysql_error($conn));
+				  $conn->query($query) or die("Query fallita: ".mysqli_error($conn));
 			}
 		}
 	}

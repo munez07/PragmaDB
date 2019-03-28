@@ -1,7 +1,7 @@
 <?php
 
 require('../../Functions/get_tex.php');
-require('../../Functions/mysql_fun.php');
+require('../../Functions/mysqli_fun.php');
 require('../../Functions/urlLab.php');
 
 session_start();
@@ -22,8 +22,8 @@ else{
 			FROM Package p1 LEFT JOIN Package p2 ON p1.Padre=p2.CodAuto
 			WHERE LEFT(p1.PrefixNome,16)='Premi::Front-End'
 			ORDER BY p1.PrefixNome";
-	$pack=mysql_query($query,$conn) or fail("Query fallita: ".mysql_error($conn));
-	while($row=mysql_fetch_row($pack)){
+	$pack=  $conn->query($query) or die("Query fallita: ".mysqli_error($conn));
+	while($row=mysqli_fetch_row($pack)){
 echo<<<END
 \\subsection{\\nogloxy{{$row[1]}}}
 \\label{\\nogloxy{{$row[1]}}}
@@ -60,8 +60,8 @@ END;
 					   FROM RelatedPackage rp JOIN Package p ON rp.Pack1=p.CodAuto
 					   WHERE rp.Pack2='$row[0]'
 					   ORDER BY PrefixNome";
-		$related=mysql_query($queryRelated,$conn) or fail("Query fallita: ".mysql_error($conn));
-		$riga=mysql_fetch_row($related);
+		$related=$conn->query($queryRelated) or die("Query fallita: ".mysqli_error($conn));
+		$riga=mysqli_fetch_row($related);
 		if($riga[0]!=null){
 echo<<<END
 
@@ -70,7 +70,7 @@ echo<<<END
 \\item \\hyperref[\\nogloxy{{$riga[0]}}]{\\nogloxy{\\texttt{{$riga[1]}}}}\\\
 $riga[2]
 END;
-			while($riga=mysql_fetch_row($related)){
+			while($riga=mysqli_fetch_row($related)){
 echo<<<END
 
 \\item \\hyperref[\\nogloxy{{$riga[0]}}]{\\nogloxy{\\texttt{{$riga[1]}}}}\\\
@@ -86,8 +86,8 @@ END;
 					   FROM Package p
 					   WHERE p.Padre='$row[0]'
 					   ORDER BY p.PrefixNome";
-		$subpack=mysql_query($querySubPack,$conn) or fail("Query fallita: ".mysql_error($conn));
-		$riga=mysql_fetch_row($subpack);
+		$subpack=$conn->query($querySubPack) or die("Query fallita: ".mysqli_error($conn));
+		$riga=mysqli_fetch_row($subpack);
 		if($riga[0]!=null){
 echo<<<END
 
@@ -96,7 +96,7 @@ echo<<<END
 \\item \\hyperref[\\nogloxy{{$riga[0]}}]{\\nogloxy{\\texttt{{$riga[1]}}}}\\\
 $riga[2]
 END;
-			while($riga=mysql_fetch_row($subpack)){
+			while($riga=mysqli_fetch_row($subpack)){
 echo<<<END
 
 \\item \\hyperref[\\nogloxy{{$riga[0]}}]{\\nogloxy{\\texttt{{$riga[1]}}}}\\\
@@ -116,8 +116,8 @@ END;
 					  FROM Classe c
 					  WHERE c.ContenutaIn='$row[0]'
 					  ORDER BY c.PrefixNome";
-		$classi=mysql_query($queryClassi,$conn) or fail("Query fallita: ".mysql_error($conn));
-		$riga=mysql_fetch_row($classi);
+		$classi=$conn->query($queryClassi) or die("Query fallita: ".mysqli_error($conn));
+		$riga=mysqli_fetch_row($classi);
 		if($riga[0]!=null){
 echo<<<END
 
@@ -132,7 +132,7 @@ echo<<<END
 
 END;
 		}
-		while($riga=mysql_fetch_row($classi)){
+		while($riga=mysqli_fetch_row($classi)){
 			packageClassiCommonTex($conn, $riga, false);
 		}
 	}

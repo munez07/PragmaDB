@@ -1,6 +1,6 @@
 <?php
 
-require('../../Functions/mysql_fun.php');
+require('../../Functions/mysqli_fun.php');
 require('../../Functions/page_builder.php');
 require('../../Functions/urlLab.php'); 
 
@@ -46,16 +46,16 @@ else{
 			$err_desc=true;
 			$errori++;
 		}
-		$accf=mysql_escape_string($accf);
-		$nomef=mysql_escape_string($nomef);
-		$tipof=mysql_escape_string($tipof);
-		$descf=mysql_escape_string($descf);
 		$conn=sql_conn();
+		$accf = $conn->real_escape_string($accf);
+		$nomef = $conn->real_escape_string($nomef);
+		$tipof = $conn->real_escape_string($tipof);
+		$descf = $conn->real_escape_string($descf);
 		$query="SELECT a.CodAuto
 				FROM Attributo a
 				WHERE a.Nome='$nomef' AND a.Classe='$cl' AND a.CodAuto<>'$id'";
-		$pres=mysql_query($query,$conn) or fail("Query fallita: ".mysql_error($conn));
-		$pres=mysql_fetch_row($pres);
+		$pres=  $conn->query($query) or die("Query fallita: ".mysqli_error($conn));
+		$pres=mysqli_fetch_row($pres);
 		if($pres[0]!=null){
 			$err_pres=true;
 			$errori++;
@@ -109,8 +109,8 @@ END;
 			$timestamp_query="SELECT c.Time
 							  FROM Classe c
 							  WHERE c.CodAuto='$cl'";
-			$timestamp_query=mysql_query($timestamp_query,$conn) or fail("Query fallita: ".mysql_error($conn));
-			if($row=mysql_fetch_row($timestamp_query)){
+			$timestamp_query=$conn->query($timestamp_query) or die("Query fallita: ".mysqli_error($conn));
+			if($row=mysqli_fetch_row($timestamp_query)){
 				$timestamp_db=$row[0];
 				$timestamp_db=strtotime($timestamp_db);
 				if($timestampf<$timestamp_db){
@@ -150,7 +150,7 @@ END;
 						$query=$query."'$descf',";
 					}
 					$query=$query."'$cl')";
-					$query=mysql_query($query,$conn) or fail("Query fallita: ".mysql_error($conn));
+					$query=  $conn->query($query) or die("Query fallita: ".mysqli_error($conn));
 					$title="Attributo Modificato";
 					startpage_builder($title);
 echo<<<END
@@ -177,14 +177,14 @@ END;
 	}
 	else{
 		$id=$_GET['id'];
-		$id=mysql_escape_string($id);
 		$conn=sql_conn();
+		$id = $conn->real_escape_string($id);
 		$query="SELECT a.CodAuto, a.AccessMod, a.Nome, a.Tipo, a.Descrizione, c.PrefixNome, a.Classe
 				FROM Attributo a JOIN Classe c ON a.Classe=c.CodAuto
 				WHERE a.CodAuto='$id'";
-		$attr=mysql_query($query,$conn) or fail("Query fallita: ".mysql_error($conn));
+		$attr=  $conn->query($query) or die("Query fallita: ".mysqli_error($conn));
 		$timestamp=time();
-		$attrdb=mysql_fetch_row($attr);
+		$attrdb=mysqli_fetch_row($attr);
 		if($attrdb[0]==$id){
 			$title="$attrdb[5] - Modifica $attrdb[2]";
 			startpage_builder($title);

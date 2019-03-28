@@ -1,6 +1,6 @@
 <?php
 
-require('../Functions/mysql_fun.php');
+require('../Functions/mysqli_fun.php');
 require('../Functions/page_builder.php');
 require('../Functions/urlLab.php');
 
@@ -13,13 +13,13 @@ if(empty($_SESSION['user'])){
 }
 else{
 	$id=$_GET['id'];
-	$id=mysql_escape_string($id);
 	$conn=sql_conn();
+	$id=$conn->real_escape_string($id);
 	$queryTipo="SELECT t.Tipo
 				FROM Test t
 				WHERE t.CodAuto='$id'";
-	$tipo=mysql_query($queryTipo,$conn) or fail("Query fallita: ".mysql_error($conn));
-	$tipo=mysql_fetch_row($tipo);
+	$tipo=$conn->query($queryTipo) or die("Query fallita: ".mysqli_error($conn));
+	$tipo=mysqli_fetch_row($tipo);
 	$tipo=$tipo[0];
 	if($tipo=="Validazione"){
 		$query="SELECT t.CodAuto, CONCAT('TV',SUBSTRING(r.IdRequisito,2)), t.Tipo, t.Descrizione, t.Implementato, t.Eseguito, t.Esito, t.Time, r.IdRequisito, r.CodAuto
@@ -41,8 +41,8 @@ else{
 				FROM Test t
 				WHERE t.CodAuto='$id'";
 	}
-	$test=mysql_query($query,$conn) or fail("Query fallita: ".mysql_error($conn));
-	$row=mysql_fetch_row($test);
+	$test=  $conn->query($query) or die("Query fallita: ".mysqli_error($conn));
+	$row=mysqli_fetch_row($test);
 	if($row[0]==$id){
 		$title="Dettaglio Test - $row[1]";
 		startpage_builder($title);
@@ -117,12 +117,12 @@ END;
 					FROM (TestMetodi tm JOIN Metodo m ON tm.CodMet=m.CodAuto) JOIN Classe c ON m.Classe=c.CodAuto
 					WHERE tm.CodTest='$id'
 					ORDER BY c.PrefixNome, m.Nome"; //Query che carica i metodi della classe
-			$met=mysql_query($query,$conn) or fail("Query fallita: ".mysql_error($conn));
+			$met=  $conn->query($query) or die("Query fallita: ".mysqli_error($conn));
 echo<<<END
 
 					<dt class="widget-title">Metodi Oggetto:</dt>
 END;
-			while($riga = mysql_fetch_row($met)){
+			while($riga = mysqli_fetch_row($met)){
 echo<<<END
 					<dd><a class="link-color-pers" href="$absurl/Classi/dettaglioclasse.php?id=$riga[5]">$riga[4]</a>   --->   $riga[1] <a class="link-color-pers" href="$absurl/Classi/Metodi/dettagliometodo.php?id=$riga[0]">$riga[2]</a>(
 END;
@@ -130,13 +130,13 @@ END;
 						FROM Parametro p
 						WHERE p.Metodo=$riga[0]
 						ORDER BY p.CodAuto";
-				$par=mysql_query($query,$conn) or fail("Query fallita: ".mysql_error($conn));
-				if($riga_par=mysql_fetch_row($par)){
+				$par=  $conn->query($query) or die("Query fallita: ".mysqli_error($conn));
+				if($riga_par=mysqli_fetch_row($par)){
 echo<<<END
 <a class="link-color-pers" href="$absurl/Classi/Metodi/Parametri/dettaglioparametro.php?id=$riga_par[0]">$riga_par[1]</a>: $riga_par[2]
 END;
 				}
-				while($riga_par=mysql_fetch_row($par)){
+				while($riga_par=mysqli_fetch_row($par)){
 echo<<<END
 , <a class="link-color-pers" href="$absurl/Classi/Metodi/Parametri/dettaglioparametro.php?id=$riga_par[0]">$riga_par[1]</a>: $riga_par[2]
 END;

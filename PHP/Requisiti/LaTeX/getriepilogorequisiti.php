@@ -1,7 +1,7 @@
 <?php
 
 require('../../Functions/get_tex.php');
-require('../../Functions/mysql_fun.php');
+require('../../Functions/mysqli_fun.php');
 require('../../Functions/urlLab.php');
 
 session_start();
@@ -22,10 +22,10 @@ else{
 	$query="SELECT r.IdRequisito
 			FROM _MapRequisiti h JOIN Requisiti r ON h.CodAuto=r.CodAuto
 			ORDER BY h.Position";
-	//$ord=mysql_query($query_ord,$conn) or fail("Query fallita: ".mysql_error($conn));
-	$requi=mysql_query($query,$conn) or fail("Query fallita: ".mysql_error($conn));
+	//$ord=mysqli_query($query_ord,$conn) or die("Query fallita: ".mysqli_error($conn));
+	$requi=  $conn->query($query) or die("Query fallita: ".mysqli_error($conn));
 	$FO=0; $FD=0; $FF=0; $PO=0; $PD=0; $PF=0; $QO=0; $QD=0; $QF=0; $VO=0; $VD=0; $VF=0;
-	while($row_requi=mysql_fetch_row($requi)){
+	while($row_requi=mysqli_fetch_row($requi)){
 		$id=$row_requi[0];
 		${$id[1].$id[2]}++;
 	}

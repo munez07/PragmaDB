@@ -16,13 +16,13 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 DELIMITER $
 
 DROP FUNCTION IF EXISTS getReqTrackingVersion $
-CREATE FUNCTION getReqTrackingVersion (IdTrack VARCHAR(26)) RETURNS INT(5)
+CREATE FUNCTION getReqTrackingVersion (IdTrack VARCHAR(26)) RETURNS INT(5) DETERMINISTIC
 BEGIN
     RETURN CONVERT(RIGHT(IdTrack,LOCATE('v',REVERSE(IdTrack))-1),UNSIGNED INTEGER);/*-1 per togliere v*/
 END$
 
 DROP FUNCTION IF EXISTS findLastReqTracking $
-CREATE FUNCTION findLastReqTracking ( CodAuto INT(5)) RETURNS VARCHAR(10)
+CREATE FUNCTION findLastReqTracking ( CodAuto INT(5)) RETURNS VARCHAR(10) DETERMINISTIC
 BEGIN
     RETURN (SELECT a.IdTrack FROM ReqTracking a WHERE a.CodAuto = CodAuto AND getReqTrackingVersion(a.IdTrack) >= ALL 
     (SELECT getReqTrackingVersion(b.IdTrack) FROM ReqTracking b WHERE b.CodAuto = CodAuto));

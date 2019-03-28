@@ -14,8 +14,8 @@ Software per la gestione di documenti di progetto, in particolare permette di ge
 ## Prerequisiti
 Per utilizzare PragmaDB è necessario avere installato sulla macchina
 host (virtuale o fisica che sia):
-* *PHP*: versione > 7.2 => questa è stata utilizzata durante il progetto;
-* *MySQL*: versione > 8.0 => necessita del supporto per stored procedure ricorsive.  
+* *PHP*: versione > 7.2
+* *MySQL*: versione > 8.0  
 
 ### Note preliminari
 * Tutti gli elementi che possono appartenere ad una gerarchia (i.e. Requisiti,
